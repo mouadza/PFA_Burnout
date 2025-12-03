@@ -1,0 +1,16 @@
+# les premiers commandes:
+
+# conda create -n burnout-env python=3.11 -y
+# conda activate burnout-env
+
+numpy
+pandas
+matplotlib
+scikit-learn
+tensorflow==2.17.0
+opencv-python
+tqdm
+jupyter
+
+
+# pip install -r requirements.txt
