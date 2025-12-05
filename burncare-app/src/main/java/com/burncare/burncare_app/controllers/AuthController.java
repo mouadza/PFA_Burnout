@@ -1,17 +1,12 @@
 package com.burncare.burncare_app.controllers;
 
-import com.burncare.burncare_app.dto.AuthRequest;
-import com.burncare.burncare_app.dto.AuthResponse;
-import com.burncare.burncare_app.dto.RegisterRequest;
+import com.burncare.burncare_app.dto.*;
 import com.burncare.burncare_app.services.AuthService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-
 public class AuthController {
 
     private final AuthService authService;
@@ -21,13 +16,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public AuthResponse register(@RequestBody RegisterRequest req) {
-        return authService.register(req);
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest req) {
+        return ResponseEntity.ok(authService.register(req));
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest req) {
-        return authService.login(req);
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest req) {
+        return ResponseEntity.ok(authService.login(req));
     }
 }
-
