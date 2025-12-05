@@ -149,24 +149,36 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
+    // 1. Démarrer le chargement
     setState(() => loading = true);
 
-    try {
-      await context.read<AuthProvider>().login(
-            _emailController.text.trim(),
-            _passwordController.text.trim(),
-          );
+    // 2. Appeler le Provider et récupérer le résultat (true/false)
+    bool success = await context.read<AuthProvider>().login(
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
+    );
 
+    // 3. Arrêter le chargement
+    setState(() => loading = false);
+
+    // 4. Vérification de sécurité (Context encore valide ?)
+    if (!mounted) return;
+
+    // 5. Décision
+    if (success) {
+      // ✅ Succès : On va à l'accueil
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
-    } catch (e) {
+    } else {
+      // ❌ Échec : On affiche l'erreur
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Email ou mot de passe incorrect")),
+        const SnackBar(
+          content: Text("Email ou mot de passe incorrect"),
+          backgroundColor: Colors.red,
+        ),
       );
     }
-
-    setState(() => loading = false);
   }
 }

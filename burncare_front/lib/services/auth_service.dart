@@ -1,4 +1,3 @@
-// lib/services/auth_service.dart
 import '../models/auth_response.dart';
 import 'api_client.dart';
 
@@ -15,14 +14,17 @@ class AuthService {
     return AuthResponse.fromJson(json);
   }
 
+  // ✅ CORRECTION : On envoie firstName et lastName séparément
   Future<AuthResponse> register({
-    required String fullName,
+    required String firstName,
+    required String lastName,
     required String email,
     required String password,
     required String profession,
   }) async {
     final json = await apiClient.post('/api/auth/register', {
-      'fullName': fullName,
+      'firstName': firstName, // ✅ Envoi du prénom
+      'lastName': lastName,   // ✅ Envoi du nom
       'email': email,
       'password': password,
       'profession': profession,

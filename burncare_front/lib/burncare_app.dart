@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/auth/login_screen.dart';  // OR home_screen if you want
+import 'screens/auth/login_screen.dart';
 
 class BurnCareApp extends StatelessWidget {
   const BurnCareApp({super.key});
