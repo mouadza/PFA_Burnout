@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-// Vérifiez que ce chemin est correct selon votre structure de dossier
 import 'auth/login_screen.dart';
+
+
+import 'settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // On récupère l'utilisateur depuis le Provider
     final user = context.watch<AuthProvider>().user;
 
-    // 🔒 Sécurité : Si pas d'user, retour forcé au login
+    // 🔒 Sécurité
     if (user == null) {
       Future.microtask(() => Navigator.pushReplacement(
         context,
@@ -21,31 +22,24 @@ class HomeScreen extends StatelessWidget {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    // ✅ Gestion de l'affichage du nom (Nom + Prénom)
-    String displayName = "Utilisateur"; // Valeur par défaut (pas d'email)
-
-    // On vérifie si au moins l'un des deux est présent pour l'afficher
+    // ✅ Affichage Nom
+    String displayName = "Utilisateur";
     if (user.lastName.isNotEmpty || user.firstName.isNotEmpty) {
-      // .trim() enlève les espaces inutiles si l'un des deux est vide
       displayName = "${user.lastName} ${user.firstName}".trim();
     }
 
-    // ✅ Calcul des initiales sécurisé (Nom Prénom)
-    String initials = "?"; // Valeur par défaut
-
+    // ✅ Initiales
+    String initials = "?";
     if (user.lastName.isNotEmpty && user.firstName.isNotEmpty) {
-      // 1ère lettre du Nom + 1ère lettre du Prénom
       initials = "${user.lastName[0]}${user.firstName[0]}".toUpperCase();
     } else if (user.lastName.isNotEmpty) {
-      // Juste 1ère lettre du Nom
       initials = user.lastName[0].toUpperCase();
     } else if (user.firstName.isNotEmpty) {
-      // Juste 1ère lettre du Prénom
       initials = user.firstName[0].toUpperCase();
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA), // Gris très clair
+      backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
         title: const Text('Tableau de bord', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
@@ -67,12 +61,12 @@ class HomeScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 👋 Section Bienvenue
+            // 👋 EN-TÊTE UTILISATEUR
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -97,18 +91,20 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 15),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Bonjour, $displayName",
-                        style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        user.profession, // Affiche "MEDECIN" ou "INFIRMIER"
-                        style: const TextStyle(color: Colors.white70, fontSize: 14),
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Bonjour, $displayName",
+                          style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          user.profession,
+                          style: const TextStyle(color: Colors.white70, fontSize: 14),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -116,72 +112,98 @@ class HomeScreen extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // Titre de section
-            Text(
-              "Espace ${user.profession == 'MEDECIN' ? 'Médical' : 'Soins'}",
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+            const Text(
+              "Que souhaitez-vous faire ?",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
             ),
 
-            const SizedBox(height: 15),
+            const SizedBox(height: 20),
 
-            // 🎛️ Grille de Menu Dynamique
-            Expanded(
-              child: user.profession == 'MEDECIN'
-                  ? _buildDoctorMenu()
-                  : _buildNurseMenu(),
+            // 1️⃣ GRAND BLOC : COMMENCER LE QUESTIONNAIRE
+            _ActionCard(
+              title: "Commencer le Questionnaire",
+              subtitle: "Évaluez votre niveau de stress et de burnout",
+              icon: Icons.play_circle_fill,
+              color: Colors.blue,
+              isLarge: true,
+              onTap: () {
+                // TODO: Naviguer vers la page du questionnaire
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Lancement du questionnaire...")),
+                );
+              },
+            ),
+
+            const SizedBox(height: 20),
+
+            // 2️⃣ & 3️⃣ DEUX BLOCS : RÉSULTATS ET SETTINGS
+            Row(
+              children: [
+                Expanded(
+                  child: _ActionCard(
+                    title: "Mes Résultats",
+                    subtitle: "Historique",
+                    icon: Icons.history, // ou Icons.bar_chart
+                    color: Colors.purple,
+                    onTap: () {
+                      // TODO: Naviguer vers l'historique
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Ouverture des résultats...")),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 15),
+                Expanded(
+                  child: _ActionCard(
+                    title: "Paramètres",
+                    subtitle: "Compte & App",
+                    icon: Icons.settings,
+                    color: Colors.grey,
+                    onTap: () {
+                      // ✅ NAVIGATION VERS LA PAGE SETTINGS
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
   }
-
-  // --- MENU MÉDECIN ---
-  Widget _buildDoctorMenu() {
-    return GridView.count(
-      crossAxisCount: 2,
-      crossAxisSpacing: 15,
-      mainAxisSpacing: 15,
-      children: [
-        _MenuCard(icon: Icons.people_alt, title: "Patients", color: Colors.blue),
-        _MenuCard(icon: Icons.analytics_outlined, title: "Analyses Burnout", color: Colors.purple),
-        _MenuCard(icon: Icons.calendar_month, title: "Rendez-vous", color: Colors.orange),
-        _MenuCard(icon: Icons.settings, title: "Paramètres", color: Colors.grey),
-      ],
-    );
-  }
-
-  // --- MENU INFIRMIER ---
-  Widget _buildNurseMenu() {
-    return GridView.count(
-      crossAxisCount: 2,
-      crossAxisSpacing: 15,
-      mainAxisSpacing: 15,
-      children: [
-        _MenuCard(icon: Icons.healing, title: "Soins du jour", color: Colors.teal),
-        _MenuCard(icon: Icons.assignment_ind, title: "Suivi Patients", color: Colors.green),
-        _MenuCard(icon: Icons.notifications_active, title: "Alertes", color: Colors.redAccent),
-        _MenuCard(icon: Icons.chat, title: "Messages", color: Colors.indigo),
-      ],
-    );
-  }
 }
 
-// Widget réutilisable pour les boutons du menu
-class _MenuCard extends StatelessWidget {
-  final IconData icon;
+// Widget personnalisé pour les cartes
+class _ActionCard extends StatelessWidget {
   final String title;
+  final String subtitle;
+  final IconData icon;
   final Color color;
+  final VoidCallback onTap;
+  final bool isLarge;
 
-  const _MenuCard({required this.icon, required this.title, required this.color});
+  const _ActionCard({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+    this.isLarge = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Ouverture de $title...")));
-      },
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
       child: Container(
+        height: isLarge ? 160 : 140, // Hauteur différente selon l'importance
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -195,17 +217,33 @@ class _MenuCard extends StatelessWidget {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: isLarge ? CrossAxisAlignment.start : CrossAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: color.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, size: 30, color: color),
+              child: Icon(icon, size: isLarge ? 40 : 30, color: color),
             ),
-            const SizedBox(height: 15),
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const Spacer(),
+            Text(
+              title,
+              textAlign: isLarge ? TextAlign.left : TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Colors.black87,
+              ),
+            ),
+            if (isLarge) ...[
+              const SizedBox(height: 5),
+              Text(
+                subtitle,
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+              ),
+            ]
           ],
         ),
       ),
