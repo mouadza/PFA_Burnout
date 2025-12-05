@@ -5,7 +5,8 @@ import com.burncare.burncare_app.entities.Role;
 
 public record AuthResponse(
         String token,
-        String fullName,
+        String firstName,
+        String lastName,
         String email,
         Role role,
         Profession profession
