@@ -1,8 +1,14 @@
 package com.burncare.burncare_app.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -10,78 +16,24 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fullName;
+    // ✅ AJOUT IMPORTANT : Le lien avec Keycloak
+    @Column(unique = true)
+    private String keycloakId;
+
+    private String firstName;
+    private String lastName;
 
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    // ⚠️ MODIFICATION : J'ai retiré '@Column(nullable = false)'
+    // Car avec Keycloak, ce champ sera null dans notre base locale.
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Profession profession; // MEDECIN, INFIRMIER, AUTRE
+    private Profession profession;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public User(Long id, String fullName, String email, String password, Profession profession, Role role) {
-        this.id = id;
-        this.fullName = fullName;
-        this.email = email;
-        this.password = password;
-        this.profession = profession;
-        this.role = role;
-    }
-
-    public User() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Profession getProfession() {
-        return profession;
-    }
-
-    public void setProfession(Profession profession) {
-        this.profession = profession;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }
-

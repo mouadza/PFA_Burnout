@@ -9,29 +9,39 @@ class AuthProvider extends ChangeNotifier {
 
   AuthResponse? _currentUser;
 
-  AuthResponse? get currentUser => _currentUser;
-  bool get isLoggedIn => _currentUser != null;
+  AuthResponse? get user => _currentUser;
+  bool get isAuthenticated => _currentUser != null;
 
-  AuthProvider({required this.authService});
+  AuthProvider(this.authService);
 
-  Future<void> login(String email, String password) async {
-    final response = await authService.login(email, password);
-    _currentUser = response;
-    await _storage.write(key: 'token', value: response.token);
-    notifyListeners();
+  Future<bool> login(String email, String password) async {
+    try {
+      final response = await authService.login(email, password);
+      _currentUser = response;
+      await _storage.write(key: 'token', value: response.token);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      print("Erreur Login Provider: $e");
+      return false;
+    }
   }
 
-  Future<void> register(
-      String fullName, String email, String password, String profession) async {
-    final response = await authService.register(
-      fullName: fullName,
-      email: email,
-      password: password,
-      profession: profession,
-    );
-    _currentUser = response;
-    await _storage.write(key: 'token', value: response.token);
-    notifyListeners();
+  // ✅ CORRECTION : On utilise firstName et lastName au lieu de fullName
+  Future<bool> register(String firstName, String lastName, String email, String password, String profession) async {
+    try {
+      await authService.register(
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password,
+        profession: profession,
+      );
+      return true;
+    } catch (e) {
+      print("Erreur Register Provider: $e");
+      return false;
+    }
   }
 
   Future<void> logout() async {

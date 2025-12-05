@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-import '../home_screen.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -12,9 +11,12 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _nameController = TextEditingController();
+  // ✅ REMPLACEMENT : _nameController devient _firstNameController et _lastNameController
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
   String profession = "MEDECIN";
   bool loading = false;
 
@@ -60,12 +62,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 25),
 
-                _input(_nameController, Icons.person_outline, "Nom complet"),
+                // ✅ NOUVEAUX CHAMPS : Prénom et Nom séparés
+                _input(_firstNameController, Icons.person, "Prénom"),
                 const SizedBox(height: 15),
+                _input(_lastNameController, Icons.person_outline, "Nom"),
+                const SizedBox(height: 15),
+
                 _input(_emailController, Icons.email_outlined, "Email"),
                 const SizedBox(height: 15),
-                _input(_passwordController, Icons.lock_outline,
-                    "Mot de passe", true),
+                _input(_passwordController, Icons.lock_outline, "Mot de passe", true),
 
                 const SizedBox(height: 20),
                 const Align(
@@ -107,9 +112,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: loading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
-                            "S'inscrire",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
+                      "S'inscrire",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                   ),
                 ),
               ],
@@ -156,26 +161,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _register() async {
-    setState(() => loading = true);
-
-    try {
-      await context.read<AuthProvider>().register(
-            _nameController.text.trim(),
-            _emailController.text.trim(),
-            _passwordController.text.trim(),
-            profession,
-          );
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
-    } catch (e) {
+    // 1. Validation : On vérifie que Prénom et Nom sont remplis
+    if (_firstNameController.text.isEmpty ||
+        _lastNameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Erreur lors de l'inscription")),
+        const SnackBar(content: Text("Veuillez remplir tous les champs")),
       );
+      return;
     }
 
+    setState(() => loading = true);
+
+    // 2. Appel au Provider avec les 5 arguments (firstName, lastName, email, password, profession)
+    bool success = await context.read<AuthProvider>().register(
+      _firstNameController.text.trim(),
+      _lastNameController.text.trim(),
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
+      profession,
+    );
+
     setState(() => loading = false);
+
+    if (!mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Compte créé avec succès ! Connectez-vous."),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Erreur : Email déjà utilisé ou problème technique."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }
