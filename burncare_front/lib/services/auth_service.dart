@@ -14,26 +14,33 @@ class AuthService {
     return AuthResponse.fromJson(json);
   }
 
+  // ✅ MODIFICATION : Ajout du paramètre optionnel 'role'
   Future<AuthResponse> register({
     required String firstName,
     required String lastName,
     required String email,
     required String password,
     required String profession,
+    String? role, // <--- Nouveau paramètre (peut être null)
   }) async {
-    final json = await apiClient.post('/api/auth/register', {
+
+    // Construction du corps de la requête
+    final Map<String, dynamic> body = {
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
       'password': password,
       'profession': profession,
-    });
+      // Si role est null (inscription publique), on envoie "USER" par défaut
+      // Sinon (depuis l'admin), on envoie la valeur choisie ("ADMIN", etc.)
+      'role': role ?? "USER",
+    };
+
+    final json = await apiClient.post('/api/auth/register', body);
     return AuthResponse.fromJson(json);
   }
 
-  // ✅ CORRECTION : Route vers UserController (/api/user/profile)
   Future<AuthResponse> updateProfile(String email, String firstName, String lastName) async {
-    // On change '/api/auth/update-profile' par '/api/user/profile'
     final json = await apiClient.put('/api/user/profile', {
       'email': email,
       'firstName': firstName,
@@ -42,9 +49,7 @@ class AuthService {
     return AuthResponse.fromJson(json);
   }
 
-  // ✅ CORRECTION : Route vers UserController (/api/user/password)
   Future<void> changePassword(String email, String newPassword) async {
-    // On change '/api/auth/change-password' par '/api/user/password'
     await apiClient.put('/api/user/password', {
       'email': email,
       'newPassword': newPassword,

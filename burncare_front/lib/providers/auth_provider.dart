@@ -9,12 +9,17 @@ class AuthProvider extends ChangeNotifier {
 
   AuthResponse? _currentUser;
 
+  String? errorMessage;
+
   AuthResponse? get user => _currentUser;
   bool get isAuthenticated => _currentUser != null;
 
   AuthProvider(this.authService);
 
   Future<bool> login(String email, String password) async {
+    errorMessage = null;
+    notifyListeners();
+
     try {
       final response = await authService.login(email, password);
       _currentUser = response;
@@ -22,12 +27,43 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      print("Erreur Login Provider: $e");
+      String rawError = e.toString().replaceAll("Exception: ", "");
+      String lowerError = rawError.toLowerCase();
+
+      if (lowerError.contains("disabl") ||
+          lowerError.contains("lock") ||
+          lowerError.contains("bloqu") ||
+          lowerError.contains("desactiv") ||
+          lowerError.contains("banni") ||
+          lowerError.contains("suspend")) {
+        errorMessage = "Votre compte est bloqué ou désactivé. Contactez l'administrateur.";
+      }
+      else if (lowerError.contains("401") ||
+          lowerError.contains("bad credentials") ||
+          lowerError.contains("session") ||
+          lowerError.contains("unauthorized") ||
+          lowerError.contains("incorrect")) {
+        errorMessage = "Email ou mot de passe incorrect";
+      }
+      else {
+        errorMessage = rawError;
+      }
+
+      notifyListeners();
       return false;
     }
   }
 
-  Future<bool> register(String firstName, String lastName, String email, String password, String profession) async {
+  // ✅ MODIFICATION : Ajout du paramètre nommé optionnel {role}
+  Future<bool> register(
+      String firstName,
+      String lastName,
+      String email,
+      String password,
+      String profession,
+      {String? role} // <--- Ici
+      ) async {
+    errorMessage = null;
     try {
       await authService.register(
         firstName: firstName,
@@ -35,24 +71,27 @@ class AuthProvider extends ChangeNotifier {
         email: email,
         password: password,
         profession: profession,
+        role: role, // <--- Transmission au service
       );
       return true;
     } catch (e) {
+      errorMessage = e.toString().replaceAll("Exception: ", "");
       print("Erreur Register Provider: $e");
+      notifyListeners();
       return false;
     }
   }
 
-  // ✅ Mise à jour du profil (avec mise à jour locale immédiate)
   Future<bool> updateProfile(String firstName, String lastName) async {
     if (_currentUser == null) return false;
+    errorMessage = null;
+
     try {
       final updatedUser = await authService.updateProfile(
         _currentUser!.email,
         firstName,
         lastName,
       );
-      // On garde le token actuel, mais on met à jour les infos
       _currentUser = AuthResponse(
         token: _currentUser!.token,
         firstName: updatedUser.firstName,
@@ -64,25 +103,31 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
+      errorMessage = e.toString().replaceAll("Exception: ", "");
       print("Erreur Update Profile: $e");
+      notifyListeners();
       return false;
     }
   }
 
-  // ✅ Changement de mot de passe
   Future<bool> changePassword(String newPassword) async {
     if (_currentUser == null) return false;
+    errorMessage = null;
+
     try {
       await authService.changePassword(_currentUser!.email, newPassword);
       return true;
     } catch (e) {
+      errorMessage = e.toString().replaceAll("Exception: ", "");
       print("Erreur Change Password: $e");
+      notifyListeners();
       return false;
     }
   }
 
   Future<void> logout() async {
     _currentUser = null;
+    errorMessage = null;
     await _storage.delete(key: 'token');
     notifyListeners();
   }

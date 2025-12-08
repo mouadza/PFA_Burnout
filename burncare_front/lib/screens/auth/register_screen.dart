@@ -11,7 +11,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  // ✅ REMPLACEMENT : _nameController devient _firstNameController et _lastNameController
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -62,7 +61,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 25),
 
-                // ✅ NOUVEAUX CHAMPS : Prénom et Nom séparés
+                // Champs : Prénom et Nom
                 _input(_firstNameController, Icons.person, "Prénom"),
                 const SizedBox(height: 15),
                 _input(_lastNameController, Icons.person_outline, "Nom"),
@@ -161,7 +160,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _register() async {
-    // 1. Validation : On vérifie que Prénom et Nom sont remplis
+    // 1. Validation
     if (_firstNameController.text.isEmpty ||
         _lastNameController.text.isEmpty ||
         _emailController.text.isEmpty ||
@@ -174,8 +173,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     setState(() => loading = true);
 
-    // 2. Appel au Provider avec les 5 arguments (firstName, lastName, email, password, profession)
-    bool success = await context.read<AuthProvider>().register(
+    // On récupère le provider
+    final authProvider = context.read<AuthProvider>();
+
+    // 2. Appel au Provider
+    // Note: On ne passe pas le paramètre 'role' ici car c'est une inscription publique (par défaut USER)
+    bool success = await authProvider.register(
       _firstNameController.text.trim(),
       _lastNameController.text.trim(),
       _emailController.text.trim(),
@@ -190,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Compte créé avec succès ! Connectez-vous."),
+          content: Text("Votre compte est créé mais doit être activé par un administrateur."),
           backgroundColor: Colors.green,
         ),
       );
@@ -199,9 +202,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
     } else {
+      // ✅ CORRECTION : Affichage du vrai message d'erreur venant du serveur
+      // (Ex: "Cet email est déjà utilisé")
+      String message = authProvider.errorMessage ?? "Erreur lors de l'inscription";
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Erreur : Email déjà utilisé ou problème technique."),
+        SnackBar(
+          content: Text(message),
           backgroundColor: Colors.red,
         ),
       );

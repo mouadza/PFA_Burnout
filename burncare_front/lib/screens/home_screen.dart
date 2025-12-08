@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import 'auth/login_screen.dart';
-
-
 import 'settings_screen.dart';
+import 'admin_users_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,7 +12,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().user;
 
-    // 🔒 Sécurité
+    // 🔒 Sécurité : Redirection si pas d'utilisateur
     if (user == null) {
       Future.microtask(() => Navigator.pushReplacement(
         context,
@@ -22,13 +21,13 @@ class HomeScreen extends StatelessWidget {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    // ✅ Affichage Nom
+    // Nom complet
     String displayName = "Utilisateur";
     if (user.lastName.isNotEmpty || user.firstName.isNotEmpty) {
       displayName = "${user.lastName} ${user.firstName}".trim();
     }
 
-    // ✅ Initiales
+    // Initiales
     String initials = "?";
     if (user.lastName.isNotEmpty && user.firstName.isNotEmpty) {
       initials = "${user.lastName[0]}${user.firstName[0]}".toUpperCase();
@@ -38,9 +37,17 @@ class HomeScreen extends StatelessWidget {
       initials = user.firstName[0].toUpperCase();
     }
 
+    // 🔍 DÉTECTION ADMIN (Logic Robuste Conservée)
+    final String cleanRole = user.role.trim().toUpperCase();
+    final String cleanProfession = user.profession.trim().toUpperCase();
+
+    // On garde cette logique qui fonctionne bien
+    bool isAdmin = cleanRole.contains('ADMIN') || cleanProfession.contains('ADMIN');
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Tableau de bord', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -54,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      (_) => false,
+                      (route) => false,
                 );
               }
             },
@@ -66,15 +73,16 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 👋 EN-TÊTE UTILISATEUR
+            // 👋 EN-TÊTE
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.blue.shade800,
+                // On garde la distinction visuelle : Indigo pour Admin, Bleu pour User
+                color: isAdmin ? Colors.indigo.shade800 : Colors.blue.shade800,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blue.withOpacity(0.3),
+                    color: (isAdmin ? Colors.indigo : Colors.blue).withOpacity(0.3),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
@@ -100,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                           style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          user.profession,
+                          isAdmin ? "Administrateur Système" : user.profession,
                           style: const TextStyle(color: Colors.white70, fontSize: 14),
                         ),
                       ],
@@ -110,75 +118,128 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 40),
 
             const Text(
-              "Que souhaitez-vous faire ?",
+              "Menu Principal",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
             ),
 
             const SizedBox(height: 20),
 
-            // 1️⃣ GRAND BLOC : COMMENCER LE QUESTIONNAIRE
-            _ActionCard(
-              title: "Commencer le Questionnaire",
-              subtitle: "Évaluez votre niveau de stress et de burnout",
-              icon: Icons.play_circle_fill,
-              color: Colors.blue,
-              isLarge: true,
-              onTap: () {
-                // TODO: Naviguer vers la page du questionnaire
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Lancement du questionnaire...")),
-                );
-              },
-            ),
-
-            const SizedBox(height: 20),
-
-            // 2️⃣ & 3️⃣ DEUX BLOCS : RÉSULTATS ET SETTINGS
-            Row(
-              children: [
-                Expanded(
-                  child: _ActionCard(
-                    title: "Mes Résultats",
-                    subtitle: "Historique",
-                    icon: Icons.history, // ou Icons.bar_chart
-                    color: Colors.purple,
-                    onTap: () {
-                      // TODO: Naviguer vers l'historique
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Ouverture des résultats...")),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(width: 15),
-                Expanded(
-                  child: _ActionCard(
-                    title: "Paramètres",
-                    subtitle: "Compte & App",
-                    icon: Icons.settings,
-                    color: Colors.grey,
-                    onTap: () {
-                      // ✅ NAVIGATION VERS LA PAGE SETTINGS
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
+            // 🔀 AFFICHAGE CONDITIONNEL
+            if (isAdmin)
+              _buildAdminContent(context)
+            else
+              _buildUserContent(context),
           ],
         ),
       ),
     );
   }
+
+  // 👑 MENU ADMIN
+  Widget _buildAdminContent(BuildContext context) {
+    return Column(
+      children: [
+        _ActionCard(
+          title: "Gestion des Utilisateurs",
+          subtitle: "Ajouter, modifier ou supprimer des comptes",
+          icon: Icons.manage_accounts,
+          color: Colors.indigo,
+          isLarge: true,
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AdminUsersScreen())
+            );
+          },
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(
+              child: _ActionCard(
+                title: "Statistiques",
+                subtitle: "Vue globale",
+                icon: Icons.pie_chart,
+                color: Colors.teal,
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Statistiques à venir...")),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 15),
+            Expanded(
+              child: _ActionCard(
+                title: "Paramètres",
+                subtitle: "Mon Compte",
+                icon: Icons.settings,
+                color: Colors.grey,
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+                },
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // 🩺 MENU UTILISATEUR (Médecin/Infirmier)
+  Widget _buildUserContent(BuildContext context) {
+    return Column(
+      children: [
+        _ActionCard(
+          title: "Commencer le Questionnaire",
+          subtitle: "Évaluez votre niveau de stress et de burnout",
+          icon: Icons.play_circle_fill,
+          color: Colors.blue,
+          isLarge: true,
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Lancement du questionnaire...")),
+            );
+          },
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(
+              child: _ActionCard(
+                title: "Mes Résultats",
+                subtitle: "Historique",
+                icon: Icons.history,
+                color: Colors.purple,
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Ouverture des résultats...")),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 15),
+            Expanded(
+              child: _ActionCard(
+                title: "Paramètres",
+                subtitle: "Compte & App",
+                icon: Icons.settings,
+                color: Colors.grey,
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+                },
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
-// Widget personnalisé pour les cartes
 class _ActionCard extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -202,7 +263,7 @@ class _ActionCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        height: isLarge ? 160 : 140, // Hauteur différente selon l'importance
+        height: isLarge ? 160 : 140,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -235,6 +296,7 @@ class _ActionCard extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
                 color: Colors.black87,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             if (isLarge) ...[
@@ -242,6 +304,8 @@ class _ActionCard extends StatelessWidget {
               Text(
                 subtitle,
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ]
           ],
