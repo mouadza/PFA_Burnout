@@ -96,9 +96,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: loading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
-                            "Se connecter",
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
+                      "Se connecter",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                   ),
                 ),
               ],
@@ -149,33 +149,39 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
-    // 1. Démarrer le chargement
     setState(() => loading = true);
 
-    // 2. Appeler le Provider et récupérer le résultat (true/false)
-    bool success = await context.read<AuthProvider>().login(
+    // On récupère le provider
+    final authProvider = context.read<AuthProvider>();
+
+    // On tente le login
+    bool success = await authProvider.login(
       _emailController.text.trim(),
       _passwordController.text.trim(),
     );
 
-    // 3. Arrêter le chargement
     setState(() => loading = false);
 
-    // 4. Vérification de sécurité (Context encore valide ?)
     if (!mounted) return;
 
-    // 5. Décision
     if (success) {
-      // ✅ Succès : On va à l'accueil
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } else {
-      // ❌ Échec : On affiche l'erreur
+      // ✅ CORRECTION : On récupère le message dynamique depuis le Provider
+      // Assurez-vous que votre AuthProvider a un champ 'errorMessage' ou 'error'
+      // qui contient le message reçu du JSON Spring Boot.
+      String message = authProvider.errorMessage ?? "Une erreur est survenue";
+
+      // Si le message est vide ou null, on met un message par défaut,
+      // mais on n'écrase pas le message du serveur s'il existe.
+      if (message.isEmpty) message = "Email ou mot de passe incorrect";
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Email ou mot de passe incorrect"),
+        SnackBar(
+          content: Text(message), // Affichage dynamique
           backgroundColor: Colors.red,
         ),
       );
