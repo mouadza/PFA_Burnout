@@ -4,19 +4,22 @@ import com.burncare.burncare_app.dto.*;
 import com.burncare.burncare_app.entities.*;
 import com.burncare.burncare_app.repositories.UserRepository;
 import jakarta.ws.rs.core.Response;
+import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,17 +42,24 @@ public class AuthService {
         this.keycloak = keycloak;
     }
 
+    // --- INSCRIPTION (REGISTER) ---
     public AuthResponse register(RegisterRequest req) {
         if (userRepository.existsByEmail(req.email())) {
-            throw new RuntimeException("Email existe déjà");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cet email est déjà utilisé.");
         }
+
+        // ✅ SÉCURITÉ MAXIMALE :
+        // Tout nouveau compte est DÉSACTIVÉ par défaut (false).
+        // Même si l'admin coche "Activé" lors de la création, on l'ignore ici pour forcer la validation ultérieure.
+        // L'admin devra aller dans "Détails" -> "Approuver" pour l'activer.
+        boolean isEnabled = false;
 
         UserRepresentation kcUser = new UserRepresentation();
         kcUser.setFirstName(req.firstName());
         kcUser.setLastName(req.lastName());
         kcUser.setEmail(req.email());
         kcUser.setUsername(req.email());
-        kcUser.setEnabled(true);
+        kcUser.setEnabled(isEnabled); // Toujours false à la création
         kcUser.setEmailVerified(true);
 
         CredentialRepresentation credential = new CredentialRepresentation();
@@ -59,22 +69,43 @@ public class AuthService {
         kcUser.setCredentials(List.of(credential));
 
         UsersResource usersResource = keycloak.realm(realm).users();
-        Response response = usersResource.create(kcUser);
+
+        Response response;
+        try {
+            response = usersResource.create(kcUser);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur connexion Keycloak: " + e.getMessage());
+        }
 
         if (response.getStatus() != 201) {
             String errorBody = response.readEntity(String.class);
-            System.err.println("❌ KEYCLOAK REGISTER ERROR: " + errorBody);
-            throw new RuntimeException("Keycloak Refus: " + errorBody);
+            throw new RuntimeException("Erreur Keycloak: " + errorBody);
         }
 
-        String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
+        String userId = CreatedResponseUtil.getCreatedId(response);
 
+        // Ajout des rôles Keycloak
         try {
-            String roleName = req.profession().name();
-            RoleRepresentation roleRep = keycloak.realm(realm).roles().get(roleName).toRepresentation();
-            usersResource.get(userId).roles().realmLevel().add(Collections.singletonList(roleRep));
+            if (req.profession() != null) {
+                String professionRole = req.profession().name();
+                try {
+                    RoleRepresentation roleRep = keycloak.realm(realm).roles().get(professionRole).toRepresentation();
+                    usersResource.get(userId).roles().realmLevel().add(Collections.singletonList(roleRep));
+                } catch (Exception ex) {
+                    System.err.println("⚠️ Rôle Keycloak introuvable pour profession: " + professionRole);
+                }
+            }
+
+            if (req.role() == Role.ADMIN) {
+                try {
+                    RoleRepresentation adminRoleRep = keycloak.realm(realm).roles().get("ADMIN").toRepresentation();
+                    usersResource.get(userId).roles().realmLevel().add(Collections.singletonList(adminRoleRep));
+                } catch (Exception ex) {
+                    System.err.println("⚠️ Rôle ADMIN introuvable dans Keycloak");
+                }
+            }
         } catch (Exception e) {
-            System.err.println("⚠️ ERREUR RÔLE : " + e.getMessage());
+            System.err.println("⚠️ Erreur assignation rôles Keycloak : " + e.getMessage());
         }
 
         User user = new User();
@@ -83,7 +114,10 @@ public class AuthService {
         user.setLastName(req.lastName());
         user.setEmail(req.email());
         user.setProfession(req.profession());
-        user.setRole(Role.USER);
+
+        user.setRole(req.role() != null ? req.role() : Role.USER);
+
+        user.setEnabled(isEnabled);
 
         userRepository.save(user);
 
@@ -97,7 +131,16 @@ public class AuthService {
         );
     }
 
+    // --- CONNEXION (LOGIN) ---
     public AuthResponse login(AuthRequest req) {
+        User user = userRepository.findByEmail(req.email())
+                .orElseThrow(() -> new BadCredentialsException("Email ou mot de passe incorrect"));
+
+        if (!user.isEnabled()) {
+            // Message explicite pour l'utilisateur bloqué
+            throw new DisabledException("Votre compte est créé mais doit être activé par un administrateur.");
+        }
+
         String tokenEndpoint = keycloakServerUrl + "/realms/" + realm + "/protocol/openid-connect/token";
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -116,13 +159,13 @@ public class AuthService {
             ResponseEntity<Map> response = restTemplate.exchange(tokenEndpoint, HttpMethod.POST, entity, Map.class);
             accessToken = (String) response.getBody().get("access_token");
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException("Erreur Keycloak: " + e.getResponseBodyAsString());
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new BadCredentialsException("Email ou mot de passe incorrect");
+            }
+            throw new RuntimeException("Erreur Keycloak: " + e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException("Erreur interne: " + e.getMessage());
         }
-
-        User user = userRepository.findByEmail(req.email())
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable en local"));
 
         return new AuthResponse(
                 accessToken,
@@ -132,52 +175,5 @@ public class AuthService {
                 user.getRole(),
                 user.getProfession()
         );
-    }
-
-    // ✅ MISE À JOUR DU PROFIL (Keycloak + DB)
-    public AuthResponse updateProfile(UpdateProfileRequest req) {
-        // 1. Récupérer l'utilisateur local
-        User user = userRepository.findByEmail(req.email())
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
-
-        // 2. Mettre à jour Keycloak
-        if (user.getKeycloakId() != null) {
-            UserResource userResource = keycloak.realm(realm).users().get(user.getKeycloakId());
-            UserRepresentation kcUser = userResource.toRepresentation();
-            kcUser.setFirstName(req.firstName());
-            kcUser.setLastName(req.lastName());
-            userResource.update(kcUser);
-        }
-
-        // 3. Mettre à jour la base locale
-        user.setFirstName(req.firstName());
-        user.setLastName(req.lastName());
-        userRepository.save(user);
-
-        // 4. Retourner les nouvelles infos (sans changer le token pour l'instant)
-        return new AuthResponse(
-                "", // On ne renvoie pas de nouveau token ici pour simplifier
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getRole(),
-                user.getProfession()
-        );
-    }
-
-    // ✅ CHANGEMENT DE MOT DE PASSE (Keycloak Uniquement)
-    public void changePassword(ChangePasswordRequest req) {
-        User user = userRepository.findByEmail(req.email())
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
-
-        if (user.getKeycloakId() != null) {
-            CredentialRepresentation cred = new CredentialRepresentation();
-            cred.setType(CredentialRepresentation.PASSWORD);
-            cred.setValue(req.newPassword());
-            cred.setTemporary(false);
-
-            keycloak.realm(realm).users().get(user.getKeycloakId()).resetPassword(cred);
-            System.out.println("✅ Mot de passe mis à jour dans Keycloak pour " + req.email());
-        }
     }
 }

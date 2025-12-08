@@ -36,4 +36,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    // ✅ CORRECTION : Ajout du champ enabled
+    // Cela permet à @Data de générer isEnabled() et setEnabled()
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean enabled = true;
+
 }
