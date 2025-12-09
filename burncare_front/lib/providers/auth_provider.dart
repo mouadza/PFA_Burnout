@@ -14,6 +14,9 @@ class AuthProvider extends ChangeNotifier {
   AuthResponse? get user => _currentUser;
   bool get isAuthenticated => _currentUser != null;
 
+  String? get token => _currentUser?.token;
+
+
   AuthProvider(this.authService);
 
   Future<bool> login(String email, String password) async {
