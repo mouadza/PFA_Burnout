@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import 'auth/login_screen.dart';
+import 'my_results_screen.dart';
 import 'settings_screen.dart';
 import 'admin_users_screen.dart';
+import 'questionnaire/questionnaire_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -37,11 +39,9 @@ class HomeScreen extends StatelessWidget {
       initials = user.firstName[0].toUpperCase();
     }
 
-    // 🔍 DÉTECTION ADMIN (Logic Robuste Conservée)
+    // 🔍 DÉTECTION ADMIN
     final String cleanRole = user.role.trim().toUpperCase();
     final String cleanProfession = user.profession.trim().toUpperCase();
-
-    // On garde cette logique qui fonctionne bien
     bool isAdmin = cleanRole.contains('ADMIN') || cleanProfession.contains('ADMIN');
 
     return Scaffold(
@@ -77,7 +77,6 @@ class HomeScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                // On garde la distinction visuelle : Indigo pour Admin, Bleu pour User
                 color: isAdmin ? Colors.indigo.shade800 : Colors.blue.shade800,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
@@ -95,7 +94,11 @@ class HomeScreen extends StatelessWidget {
                     backgroundColor: Colors.white.withOpacity(0.2),
                     child: Text(
                       initials,
-                      style: const TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 15),
@@ -105,11 +108,18 @@ class HomeScreen extends StatelessWidget {
                       children: [
                         Text(
                           "Bonjour, $displayName",
-                          style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Text(
                           isAdmin ? "Administrateur Système" : user.profession,
-                          style: const TextStyle(color: Colors.white70, fontSize: 14),
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
                         ),
                       ],
                     ),
@@ -122,7 +132,11 @@ class HomeScreen extends StatelessWidget {
 
             const Text(
               "Menu Principal",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
 
             const SizedBox(height: 20),
@@ -138,21 +152,67 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  /// 🔔 Pop-up conseils + navigation vers QuestionnaireScreen
+  void _showQuestionnaireIntroDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text("Avant de commencer le questionnaire"),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Quelques conseils :",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text("• Répondez honnêtement selon votre dernier service."),
+              SizedBox(height: 4),
+              Text("• Il n’y a pas de bonnes ou mauvaises réponses."),
+              SizedBox(height: 4),
+              Text("• Le questionnaire prend environ 3 à 5 minutes."),
+              SizedBox(height: 4),
+              Text("• Vos réponses restent confidentielles."),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text("Annuler"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(ctx); // fermer la pop-up
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const QuestionnaireScreen(),
+                  ),
+                );
+              },
+              child: const Text("Commencer"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // 👑 MENU ADMIN
   Widget _buildAdminContent(BuildContext context) {
     return Column(
       children: [
         _ActionCard(
-          title: "Gestion des Utilisateurs",
-          subtitle: "Ajouter, modifier ou supprimer des comptes",
-          icon: Icons.manage_accounts,
-          color: Colors.indigo,
+          title: "Commencer le Questionnaire",
+          subtitle: "Évaluez votre niveau de stress et de burnout",
+          icon: Icons.play_circle_fill,
+          color: Colors.blue,
           isLarge: true,
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AdminUsersScreen())
-            );
+            _showQuestionnaireIntroDialog(context);
           },
         ),
         const SizedBox(height: 20),
@@ -179,7 +239,10 @@ class HomeScreen extends StatelessWidget {
                 icon: Icons.settings,
                 color: Colors.grey,
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                  );
                 },
               ),
             ),
@@ -200,9 +263,7 @@ class HomeScreen extends StatelessWidget {
           color: Colors.blue,
           isLarge: true,
           onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Lancement du questionnaire...")),
-            );
+            _showQuestionnaireIntroDialog(context);
           },
         ),
         const SizedBox(height: 20),
@@ -215,11 +276,15 @@ class HomeScreen extends StatelessWidget {
                 icon: Icons.history,
                 color: Colors.purple,
                 onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Ouverture des résultats...")),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MyResultsScreen(),
+                    ),
                   );
                 },
               ),
+
             ),
             const SizedBox(width: 15),
             Expanded(
@@ -229,7 +294,10 @@ class HomeScreen extends StatelessWidget {
                 icon: Icons.settings,
                 color: Colors.grey,
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                  );
                 },
               ),
             ),
@@ -273,12 +341,13 @@ class _ActionCard extends StatelessWidget {
               color: Colors.black.withOpacity(0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
-            )
+            ),
           ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: isLarge ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+          crossAxisAlignment:
+          isLarge ? CrossAxisAlignment.start : CrossAxisAlignment.center,
           children: [
             Container(
               padding: const EdgeInsets.all(12),
@@ -292,7 +361,7 @@ class _ActionCard extends StatelessWidget {
             Text(
               title,
               textAlign: isLarge ? TextAlign.left : TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
                 color: Colors.black87,
@@ -303,11 +372,14 @@ class _ActionCard extends StatelessWidget {
               const SizedBox(height: 5),
               Text(
                 subtitle,
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 13,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-            ]
+            ],
           ],
         ),
       ),
