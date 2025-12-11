@@ -6,17 +6,15 @@
 
 numpy
 pandas
+joblib
 matplotlib
-scikit-learn
+scikit-learn==1.7.2
 tensorflow==2.17.0
 opencv-python
 tqdm
-jupyter
-
-
-# pip install -r requirements.txt
-# pip install uvicorn[standard]
-# pip install fastapi
+fastapi
+uvicorn[standard]
+python-multipart
 
 
 # pour executer le code : pip install uvicorn[standard] 
