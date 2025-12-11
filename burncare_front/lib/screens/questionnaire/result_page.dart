@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import '../user_home_screen.dart';
 
 import '../../providers/auth_provider.dart'; // 🔁 adapte le chemin
 
@@ -286,12 +287,36 @@ class _ResultPageState extends State<ResultPage> {
               icon: const Icon(Icons.replay),
               label: const Text("Refaire le test"),
             ),
+
+            const SizedBox(height: 12),
+
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const UserHomeScreen()),
+                );
+              },
+              icon: const Icon(Icons.home),
+              label: const Text("Retour à l'accueil"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+            ),
+
             const SizedBox(height: 8),
             const Text(
               "Ce test est un outil de dépistage et ne remplace pas un diagnostic médical professionnel.",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 11, color: Colors.grey),
+              style: TextStyle(fontSize: 12, color: Colors.grey),
             ),
+
+
           ],
         ),
       ),
