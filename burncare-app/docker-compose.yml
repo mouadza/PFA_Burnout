@@ -32,3 +32,22 @@ services:
       - "8180:8080"
     depends_on:
       - postgres
+
+  # --- AJOUT DU SERVICE IA ---
+  ai_service:
+    container_name: burnout_ai
+    build:
+      context: ../ai_service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"  # Accessible via http://localhost:8000
+    volumes:
+      # Synchronisation : Si tu changes ton code sur Windows,
+      # ça se met à jour dans Docker immédiatement.
+      - ../ai_service:/app
+      # On ignore les fichiers lourds ou inutiles pour éviter de les copier en boucle
+      - /app/__pycache__
+      - /app/dataset
+      - /app/models
+    environment:
+      - PYTHONUNBUFFERED=1
