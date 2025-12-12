@@ -28,6 +28,10 @@ services:
       # Les identifiants admin ont été retirés pour la sécurité.
       # Utilise le compte admin créé manuellement via l'interface.
 
+      # --- AJOUTER CECI POUR LE PREMIER DÉMARRAGE ---
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
     ports:
       - "8180:8080"
     depends_on:
