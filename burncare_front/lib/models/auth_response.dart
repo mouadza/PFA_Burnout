@@ -21,7 +21,7 @@ class AuthResponse {
       firstName: json['firstName'] ?? '',
       lastName: json['lastName'] ?? '',
       email: json['email'] ?? '',
-      role: json['role'] ?? '',
+      role: json['role'] ?? 'USER',
       profession: json['profession'] ?? '',
     );
   }

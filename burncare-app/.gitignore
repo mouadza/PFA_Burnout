@@ -21,6 +21,7 @@ target/
 
 ### NetBeans ###
 /nbproject/private/
+keycloak_data/
 /nbbuild/
 /dist/
 /nbdist/

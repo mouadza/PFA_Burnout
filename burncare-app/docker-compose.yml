@@ -25,10 +25,33 @@ services:
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: password
       
-      # Admin Credentials
+      # Les identifiants admin ont été retirés pour la sécurité.
+      # Utilise le compte admin créé manuellement via l'interface.
+
+      # --- AJOUTER CECI POUR LE PREMIER DÉMARRAGE ---
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+
     ports:
       - "8180:8080"
     depends_on:
       - postgres
+
+  # --- AJOUT DU SERVICE IA ---
+  ai_service:
+    container_name: burnout_ai
+    build:
+      context: ../ai_service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"  # Accessible via http://localhost:8000
+    volumes:
+      # Synchronisation : Si tu changes ton code sur Windows,
+      # ça se met à jour dans Docker immédiatement.
+      - ../ai_service:/app
+      # On ignore les fichiers lourds ou inutiles pour éviter de les copier en boucle
+      - /app/__pycache__
+      - /app/dataset
+      - /app/models
+    environment:
+      - PYTHONUNBUFFERED=1

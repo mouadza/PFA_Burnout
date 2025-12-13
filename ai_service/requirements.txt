@@ -2,15 +2,20 @@
 
 # conda create -n burnout-env python=3.11 -y
 # conda activate burnout-env
+# pour désactiver l'environnement: conda deactivate
 
 numpy
 pandas
+joblib
 matplotlib
-scikit-learn
+scikit-learn==1.7.2
 tensorflow==2.17.0
 opencv-python
 tqdm
-jupyter
+fastapi
+uvicorn[standard]
+python-multipart
 
 
-# pip install -r requirements.txt
+# pour executer le code : pip install uvicorn[standard] 
+
