@@ -7,7 +7,7 @@ import 'providers/auth_provider.dart';
 import 'burncare_app.dart';
 
 void main() {
-  // 10.0.2.2 est l'adresse spéciale pour accéder au localhost de votre PC depuis l'émulateur Android
+
   final apiClient = ApiClient(baseUrl: 'http://10.0.2.2:8080');
   final authService = AuthService(apiClient);
 

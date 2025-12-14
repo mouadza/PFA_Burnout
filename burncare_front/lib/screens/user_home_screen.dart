@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import 'auth/login_screen.dart';
+import 'fatigue_camera_screen.dart';
 import 'my_results_screen.dart';
 import 'settings_screen.dart';
 import 'questionnaire/questionnaire_screen.dart';
@@ -139,17 +140,36 @@ class UserHomeScreen extends StatelessWidget {
   Widget _buildUserContent(BuildContext context) {
     return Column(
       children: [
+        // ✅ Large card 1
         _ActionCard(
           title: "Commencer le Questionnaire",
           subtitle: "Évaluez votre niveau de stress et de burnout",
           icon: Icons.play_circle_fill,
           color: Colors.blue,
           isLarge: true,
+          onTap: () => _showQuestionnaireIntroDialog(context),
+        ),
+
+        const SizedBox(height: 16),
+
+        // ✅ Large card 2
+        _ActionCard(
+          title: "Détection fatigue (Caméra)",
+          subtitle: "Analyser votre état via une photo",
+          icon: Icons.camera_alt,
+          color: Colors.teal,
+          isLarge: true,
           onTap: () {
-            _showQuestionnaireIntroDialog(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const FatigueCameraScreen()),
+            );
           },
         ),
-        const SizedBox(height: 20),
+
+        const SizedBox(height: 16),
+
+        // ✅ Two small cards in a row
         Row(
           children: [
             Expanded(
@@ -158,6 +178,7 @@ class UserHomeScreen extends StatelessWidget {
                 subtitle: "Historique",
                 icon: Icons.history,
                 color: Colors.purple,
+                isLarge: false,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -166,13 +187,14 @@ class UserHomeScreen extends StatelessWidget {
                 },
               ),
             ),
-            const SizedBox(width: 15),
+            const SizedBox(width: 12),
             Expanded(
               child: _ActionCard(
                 title: "Paramètres",
                 subtitle: "Compte & App",
                 icon: Icons.settings,
                 color: Colors.grey,
+                isLarge: false,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -186,6 +208,7 @@ class UserHomeScreen extends StatelessWidget {
       ],
     );
   }
+
 
   void _showQuestionnaireIntroDialog(BuildContext context) {
     showDialog(

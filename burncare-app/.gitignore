@@ -32,3 +32,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Keycloak (runtime / docker volume) ###
+burncare-app/keycloak_data/
+**/keycloak_data/
+
