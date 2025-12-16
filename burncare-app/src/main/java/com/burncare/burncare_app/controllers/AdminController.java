@@ -3,7 +3,7 @@ package com.burncare.burncare_app.controllers;
 import com.burncare.burncare_app.dto.UserDTO;
 import com.burncare.burncare_app.entities.User;
 import com.burncare.burncare_app.services.AdminService;
-import com.burncare.burncare_app.services.UserService; // ✅ Import nécessaire
+import com.burncare.burncare_app.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
