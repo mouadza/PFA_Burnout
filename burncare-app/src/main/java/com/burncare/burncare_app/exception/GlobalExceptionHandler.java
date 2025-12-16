@@ -1,4 +1,4 @@
-package com.burncare.burncare_app.exception; // ⚠️ Adaptez le package à votre projet
+package com.burncare.burncare_app.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,27 +14,31 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // ✅ CORRECTION SONARQUBE : Constantes pour éviter la duplication des clés JSON
+    private static final String KEY_MESSAGE = "message";
+    private static final String KEY_ERROR = "error";
+
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<Map<String, String>> handleLockedException(LockedException ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Votre compte est bloqué. Contactez l'administrateur.");
-        response.put("error", "Account Locked");
+        response.put(KEY_MESSAGE, ex.getMessage());
+        response.put(KEY_ERROR, "Account Locked");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<Map<String, String>> handleDisabledException(DisabledException ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Votre compte est désactivé.");
-        response.put("error", "Account Disabled");
+        response.put(KEY_MESSAGE, ex.getMessage());
+        response.put(KEY_ERROR, "Account Disabled");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Map<String, String>> handleBadCredentialsException(BadCredentialsException ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Email ou mot de passe incorrect");
-        response.put("error", "Bad Credentials");
+        response.put(KEY_MESSAGE, ex.getMessage());
+        response.put(KEY_ERROR, "Bad Credentials");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 }
