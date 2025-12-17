@@ -9,13 +9,9 @@ from PIL import Image
 import io
 import json
 from pathlib import Path
-from typing import Optional, Literal
+from typing import Optional, Literal, Any
 
-# ======================================================
-# App
-# ======================================================
 app = FastAPI()
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -29,7 +25,6 @@ app.add_middleware(
 burnout_model = joblib.load("models/burnout_best_model.pkl")
 BURNOUT_LABELS = {0: "Faible", 1: "Moyen", 2: "Élevé"}
 
-
 class BurnoutRequest(BaseModel):
     answers: list[int]
 
@@ -42,26 +37,181 @@ class BurnoutRequest(BaseModel):
         return v
 
 
-@app.post("/predict")
-def predict_burnout(req: BurnoutRequest):
+def burnout_recs_by_score(score: int, confidence: float) -> list[dict[str, Any]]:
+    """
+    Recos détaillées basées uniquement sur burnout_score (0..100).
+    Chaque tranche a un plan multi-aspects.
+    """
+    def rec(priority, severity, title, tag, why, plan):
+        return {
+            "priority": priority,
+            "severity": severity,  # 1..5
+            "title": title,
+            "tag": tag,
+            "why": why,
+            "plan": plan
+        }
+
+    cautious = confidence < 0.55
+    caution_txt = " (prudence: confiance modèle faible)" if cautious else ""
+
+    # Tranches
+    if score < 20:
+        return [
+            rec(2, 1, "Prévention légère", "planning",
+                f"Score {score}/100 → faible impact détecté{caution_txt}.",
+                {
+                    "now": ["Hydratation + posture correcte.", "Micro-pause 60s (respiration lente)."],
+                    "next_30_min": ["Planifier 1 pause courte (2–3 min)."],
+                    "during_shift": ["Éviter le multitâche inutile.", "Garder une checklist simple."],
+                    "after_shift": ["Sommeil régulier.", "Activité relaxante 10 min."],
+                    "avoid": ["Enchaîner sans pause toute la journée."]
+                })
+        ]
+
+    if score < 30:
+        return [
+            rec(2, 2, "Stabilité & rythme", "planning",
+                f"Score {score}/100 → début de fatigue/stress{caution_txt}.",
+                {
+                    "now": ["Respiration 2 min (4s/6s).", "Boire un verre d’eau."],
+                    "next_30_min": ["Faire une pause 3–5 min loin du stress.", "Réduire les interruptions."],
+                    "during_shift": ["1 tâche à la fois.", "Prioriser 3 tâches clés."],
+                    "after_shift": ["Décompression 10 min.", "Sommeil suffisant."],
+                    "avoid": ["Café en continu pour “tenir”."]
+                })
+        ]
+
+    if score < 40:
+        return [
+            rec(1, 2, "Réduction de charge", "mental",
+                f"Score {score}/100 → surcharge modérée possible{caution_txt}.",
+                {
+                    "now": ["Lister les tâches et supprimer le non-essentiel.", "Respiration 2 min."],
+                    "next_30_min": ["Pause réelle 5–10 min.", "Demander un mini-renfort si possible."],
+                    "during_shift": ["Batcher les tâches similaires.", "Utiliser checklists (éviter oublis)."],
+                    "after_shift": ["Activité calme + hydratation.", "Sommeil prioritaire."],
+                    "avoid": ["Multitâche + décisions sans notes."]
+                })
+        ]
+
+    if score < 50:
+        return [
+            rec(1, 3, "Récupération active", "repos",
+                f"Score {score}/100 → fatigue claire{caution_txt}.",
+                {
+                    "now": ["Pause 5 min (assis).", "Hydratation + collation légère."],
+                    "next_30_min": ["Marche 2 min + étirements 2 min.", "Réduire tâches complexes."],
+                    "during_shift": ["Alterner tâches lourdes/légères.", "Valider les actions critiques si possible."],
+                    "after_shift": ["Déconnexion 15 min.", "Sommeil en priorité."],
+                    "avoid": ["Ignorer les signaux (maux de tête, irritabilité)."]
+                })
+        ]
+
+    if score < 60:
+        return [
+            rec(1, 3, "Plan anti-épuisement", "mental",
+                f"Score {score}/100 → risque modéré{caution_txt}.",
+                {
+                    "now": ["Stop 2 min, respiration lente.", "Réduire interruptions."],
+                    "next_30_min": ["Pause 10 min.", "Mettre une checklist obligatoire sur tâches critiques."],
+                    "during_shift": ["Valider décisions importantes avec un collègue.", "Limiter surcharge cognitive."],
+                    "after_shift": ["Sommeil + repas léger.", "Éviter écrans tardifs."],
+                    "avoid": ["Café tardif + absence de pauses."]
+                })
+        ]
+
+    if score < 70:
+        return [
+            rec(0, 4, "Alerte – surcharge importante", "sécurité",
+                f"Score {score}/100 → surcharge importante{caution_txt}.",
+                {
+                    "now": ["Éviter décisions critiques seul.", "Passer en binôme sur actes sensibles."],
+                    "next_30_min": ["Pause 10–15 min (réelle).", "Hydratation + respiration."],
+                    "during_shift": ["Simplifier: tâches simples + validation croisée.", "Réduire multitâche."],
+                    "after_shift": ["Récupération prioritaire.", "Ne pas planifier activités lourdes."],
+                    "avoid": ["Continuer “comme si de rien n’était”."]
+                }),
+            rec(1, 3, "Récupération", "repos",
+                f"Score {score}/100 → besoin de récupération{caution_txt}.",
+                {
+                    "now": ["S’asseoir 3–5 min.", "Étirements (cou/épaules)."],
+                    "next_30_min": ["Si possible micro-sieste 10–15 min."],
+                    "during_shift": ["Micro-pauses toutes 45–60 min."],
+                    "after_shift": ["Sommeil et hydratation."],
+                    "avoid": ["Rester debout sans pause longtemps."]
+                })
+        ]
+
+    if score < 80:
+        return [
+            rec(0, 4, "Risque élevé – actions immédiates", "sécurité",
+                f"Score {score}/100 → risque élevé{caution_txt}.",
+                {
+                    "now": ["Binôme sur tâches critiques.", "Utiliser checklists systématiques."],
+                    "next_30_min": ["Pause 15 min.", "Air frais/lumière vive si possible."],
+                    "during_shift": ["Éviter tâches complexes longues.", "Limiter décisions lourdes."],
+                    "after_shift": ["Récupération stricte (sommeil).", "Éviter conduite longue si somnolence."],
+                    "avoid": ["Prendre des risques / aller vite pour “finir”."]})
+        ]
+
+    # 80–100
+    return [
+        rec(0, 5, "Critique – sécuriser immédiatement", "sécurité",
+            f"Score {score}/100 → niveau critique{caution_txt}.",
+            {
+                "now": ["Stopper tâches à risque si possible.", "Informer un responsable / demander relais."],
+                "next_30_min": ["Pause réelle 15–20 min (récupération).", "Hydratation + collation légère."],
+                "during_shift": ["Tâches simples uniquement.", "Validation obligatoire des actes critiques."],
+                "after_shift": ["Récupération + éviter conduite si somnolence.", "Considérer avis pro si répétitif."],
+                "avoid": ["Rester seul en zone critique.", "Continuer sans pause."]
+            })
+    ]
+
+
+@app.post("/predict_personalized")
+def predict_burnout_personalized(req: BurnoutRequest):
     X = np.array(req.answers).reshape(1, -1)
     pred = int(burnout_model.predict(X)[0])
     proba = burnout_model.predict_proba(X)[0].tolist()
     label = BURNOUT_LABELS[pred]
 
     burnout_score = int(round(sum(req.answers) / (12 * 4) * 100))
+    confidence = float(max(proba)) if proba else 0.0
+
+    # Titre/message basés sur score (pas sur label uniquement)
+    if burnout_score < 35:
+        risk_title = "Risque Faible"
+        message = "Risque faible selon votre score."
+    elif burnout_score < 70:
+        risk_title = "Risque Modéré"
+        message = "Risque modéré selon votre score. Surveillez votre charge et votre récupération."
+    else:
+        risk_title = "Risque Élevé"
+        message = "Risque élevé selon votre score. Réduction de surcharge et récupération recommandées."
+
+    recs = burnout_recs_by_score(burnout_score, confidence)
 
     return {
         "risk_level": pred,
         "risk_label": label,
         "burnout_score": burnout_score,
+        "risk_title": risk_title,
+        "message": message,
+        "confidence": confidence,
         "probabilities": proba,
+        "personalized_recommendations": recs
     }
+
 
 # ======================================================
 # 2) Fatigue Image Model
 # ======================================================
-FATIGUE_MODEL_PATH = Path("models") / "fatigue_cnn_baseline.keras"
+BASE_DIR = Path(__file__).resolve().parent
+MODELS_DIR = BASE_DIR / "models"
+
+FATIGUE_MODEL_PATH = MODELS_DIR / "fatigue_cnn_baseline.keras"
+
 fatigue_model = tf.keras.models.load_model(FATIGUE_MODEL_PATH)
 
 IMG_HEIGHT = 224
@@ -125,111 +275,185 @@ def build_personalized_recs(risk_label: str, fatigue_score: int, ctx: UserContex
     recs = []
     profile = compute_fatigue_profile(fatigue_score, ctx)
 
-    def add(priority, title, action, why, tag):
+    def add(priority, severity, title, tag, why, plan):
         recs.append({
-            "priority": priority,
+            "priority": priority,        # 0 = urgent
+            "severity": severity,        # 1..5
             "title": title,
-            "action": action,
+            "tag": tag,
             "why": why,
-            "tag": tag
+            "plan": plan
         })
 
-    # ======================================================
-    # 🚨 1) SÉCURITÉ AVANT TOUT (très réaliste terrain)
-    # ======================================================
-    if fatigue_score >= 85:
-        add(
-            0,
-            "Alerte sécurité – vigilance critique",
-            "Suspendre toute tâche à risque immédiat (médication, décisions critiques). "
-            "Travailler en binôme et informer un supérieur si possible.",
-            "Un niveau de fatigue très élevé augmente fortement le risque d’erreur humaine.",
-            "sécurité"
-        )
+    # Helpers
+    def plan_basic(now=None, next30=None, during=None, after=None, avoid=None):
+        return {
+            "now": now or [],
+            "next_30_min": next30 or [],
+            "during_shift": during or [],
+            "after_shift": after or [],
+            "avoid": avoid or []
+        }
+
+    is_low = (risk_label == "Faible") or (fatigue_score < 35)
+    is_mod = (risk_label == "Moyen") or (35 <= fatigue_score < 70)
+    is_high = (risk_label == "Élevé") or (fatigue_score >= 70)
 
     # ======================================================
-    # 🧍‍♂️ 2) FATIGUE PHYSIQUE
+    # ✅ 0) RISQUE FAIBLE (prévention)
     # ======================================================
-    if profile["physical"] >= 3:
+    if is_low:
         add(
-            1,
-            "Récupération physique nécessaire",
-            "Prendre une pause réelle de 15–20 minutes (s’asseoir, s’étirer, respirer calmement). "
-            "Si autorisé, une micro-sieste de 10–15 minutes est idéale.",
-            "Les signes de fatigue physique indiquent une baisse de résistance et de concentration.",
-            "repos"
+            2, 1,
+            "Prévention – maintenir l’énergie",
+            "planning",
+            "Fatigue faible : l’objectif est de prévenir l’accumulation sur le service.",
+            plan_basic(
+                now=["Hydratation.", "Relâcher épaules/nuque 30s."],
+                next30=["Mini-pause 1–2 minutes.", "Marche 1 minute si possible."],
+                during=["Alterner tâches (éviter monotonie).", "Micro-pauses toutes 60–90 min."],
+                after=["Sommeil régulier.", "Déconnexion écran 30 min avant sommeil."],
+                avoid=["Boire trop de café “par habitude”."]
+            )
         )
 
-    # ======================================================
-    # 🧠 3) FATIGUE MENTALE / STRESS
-    # ======================================================
-    if profile["mental"] >= 3:
-        add(
-            1,
-            "Surcharge mentale détectée",
-            "Réduire temporairement la complexité des tâches. "
-            "Faire 2–3 minutes de respiration lente (inspiration 4s / expiration 6s).",
-            "Le stress et la charge cognitive réduisent la capacité de prise de décision.",
-            "mental"
-        )
+        if ctx.had_breaks is False:
+            add(
+                2, 2,
+                "Pause manquante",
+                "pause",
+                "Même avec fatigue faible, l’absence de pause accélère la fatigue.",
+                plan_basic(
+                    now=["Prendre 3–5 minutes de pause dès que possible."],
+                    during=["Planifier 1 pause courte par bloc de 2h."],
+                    avoid=["Enchaîner tout le service sans pause."]
+                )
+            )
+
+        if ctx.shift in ["Nuit", "Garde"]:
+            add(
+                2, 2,
+                "Prévention en garde/nuit",
+                "shift",
+                "La nuit baisse naturellement la vigilance même si le score est faible.",
+                plan_basic(
+                    during=["Éviter tâches monotones longues.", "Lumière vive si possible."],
+                    avoid=["Se surcharger en fin de garde."]
+                )
+            )
+
+        recs.sort(key=lambda x: x["priority"])
+        return recs[:5]
 
     # ======================================================
-    # 👀 4) BAISSE DE VIGILANCE / SOMNOLENCE
+    # ✅ 1) RISQUE MODÉRÉ
     # ======================================================
-    if profile["vigilance"] >= 3:
+    if is_mod:
         add(
-            1,
-            "Risque de baisse de vigilance",
-            "S’hydrater, se lever, marcher 2 minutes et s’exposer à une lumière vive. "
-            "Éviter de rester immobile trop longtemps.",
-            "La somnolence réduit l’attention et le temps de réaction.",
-            "vigilance"
+            1, 3,
+            "Récupération active",
+            "repos",
+            "Fatigue modérée : une récupération courte améliore la vigilance et réduit les erreurs.",
+            plan_basic(
+                now=["Pause 5 minutes assis.", "Étirements 2 minutes."],
+                next30=["Hydratation + collation légère."],
+                during=["Micro-pauses toutes 45–60 min.", "Limiter multitâche."],
+                after=["Sommeil prioritaire.", "Éviter café tardif."]
+            )
         )
 
-    # ======================================================
-    # 🌙 5) CONTEXTE TRAVAIL DE NUIT / GARDE
-    # ======================================================
-    if ctx.shift in ["Nuit", "Garde"]:
-        add(
-            2,
-            "Organisation du travail de nuit",
-            "Privilégier les tâches simples en fin de garde. "
-            "Reporter si possible les décisions importantes ou les valider avec un collègue.",
-            "Le travail nocturne perturbe le rythme biologique et la vigilance.",
-            "shift"
-        )
+        if profile["vigilance"] >= 3 or ctx.shift in ["Nuit", "Garde"]:
+            add(
+                1, 3,
+                "Protéger la vigilance",
+                "vigilance",
+                "Le risque de baisse de vigilance augmente avec la nuit, le manque de sommeil et la fatigue.",
+                plan_basic(
+                    now=["Se lever et marcher 2 minutes.", "Lumière vive si possible."],
+                    during=["Valider actes importants (double-check).", "Alterner tâches."],
+                    avoid=["Rester seul sur tâches critiques en fin de service."]
+                )
+            )
+
+        if profile["mental"] >= 3:
+            add(
+                1, 3,
+                "Surcharge mentale",
+                "mental",
+                "Le stress diminue la qualité des décisions et la concentration.",
+                plan_basic(
+                    now=["Respiration lente 2–3 min (4s/6s)."],
+                    during=["Faire 1 tâche à la fois.", "Utiliser checklist simple."],
+                    avoid=["Décisions importantes en état de surcharge."]
+                )
+            )
+
+        if ctx.consecutive_shifts is not None and ctx.consecutive_shifts >= 3:
+            add(
+                2, 3,
+                "Fatigue cumulative",
+                "planning",
+                "Les gardes consécutives favorisent l’épuisement progressif.",
+                plan_basic(
+                    after=["Prévoir récupération prolongée après service.", "Réduire activités non essentielles."],
+                    avoid=["Prolonger la journée après une série de gardes."]
+                )
+            )
+
+        recs.sort(key=lambda x: x["priority"])
+        return recs[:5]
 
     # ======================================================
-    # ⏸️ 6) ABSENCE DE PAUSE
+    # ✅ 2) RISQUE ÉLEVÉ (sécurité)
     # ======================================================
-    if ctx.had_breaks is False:
+    if is_high:
         add(
-            2,
-            "Pause insuffisante",
-            "Prendre une pause même courte (5 minutes) dès maintenant, "
-            "loin de l’écran ou de l’environnement de stress.",
-            "L’absence de pause continue entraîne une accumulation rapide de fatigue.",
-            "pause"
+            0, 5,
+            "Alerte sécurité – réduire le risque d’erreur",
+            "sécurité",
+            "Fatigue élevée : le risque d’erreur et de somnolence augmente fortement.",
+            plan_basic(
+                now=["Éviter tâches à risque (médication/décisions critiques).", "Travailler en binôme si possible."],
+                next30=["Pause réelle 10–15 min.", "Hydratation + collation légère."],
+                during=["Tâches simples + validation croisée.", "Limiter multitâche."],
+                after=["Éviter conduite si somnolence.", "Sommeil strict en priorité."],
+                avoid=["Accélérer pour “finir vite”."]
+            )
         )
 
-    # ======================================================
-    # 📅 7) FATIGUE CUMULÉE (gardes consécutives)
-    # ======================================================
-    if ctx.consecutive_shifts is not None and ctx.consecutive_shifts >= 3:
-        add(
-            2,
-            "Fatigue cumulative détectée",
-            "Anticiper une récupération prolongée après le service "
-            "(sommeil, réduction d’activités non essentielles).",
-            "Les gardes consécutives favorisent l’épuisement progressif.",
-            "planning"
-        )
+        if profile["physical"] >= 3 or (ctx.hours_slept is not None and ctx.hours_slept < 6):
+            add(
+                1, 4,
+                "Récupération indispensable",
+                "repos",
+                "Le manque de sommeil et la fatigue physique diminuent la concentration et les réflexes.",
+                plan_basic(
+                    now=["Pause 15–20 min si possible.", "Micro-sieste 10–15 min si autorisée."],
+                    during=["Alterner tâches.", "Réduire efforts physiques."],
+                    after=["Repos prolongé.", "Éviter écrans tard."]
+                )
+            )
 
-    # ======================================================
-    # 🔽 TRI FINAL
-    # ======================================================
+        if profile["vigilance"] >= 3 or ctx.shift in ["Nuit", "Garde"]:
+            add(
+                1, 4,
+                "Somnolence / baisse de vigilance",
+                "vigilance",
+                "La vigilance est particulièrement fragile en nuit/garde.",
+                plan_basic(
+                    now=["Lumière vive.", "Marche 2 minutes.", "Hydratation."],
+                    during=["Stop décisions critiques en autonomie.", "Double-check systématique."],
+                    avoid=["Rester isolé sur tâches critiques."]
+                )
+            )
+
+        recs.sort(key=lambda x: x["priority"])
+        return recs[:5]
+
+    # fallback
     recs.sort(key=lambda x: x["priority"])
     return recs[:5]
+
 
 
 # ======================================================
