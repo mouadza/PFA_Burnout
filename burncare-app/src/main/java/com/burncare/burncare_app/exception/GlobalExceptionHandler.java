@@ -14,7 +14,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // ✅ CORRECTION SONARQUBE : Constantes pour éviter la duplication des clés JSON
     private static final String KEY_MESSAGE = "message";
     private static final String KEY_ERROR = "error";
 
