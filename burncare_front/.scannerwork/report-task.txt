@@ -1,0 +1,6 @@
+projectKey=BurnCare-Frontend
+serverUrl=http://localhost:9000
+serverVersion=25.12.0.117093
+dashboardUrl=http://localhost:9000/dashboard?id=BurnCare-Frontend
+ceTaskId=54c10765-8ba7-4273-87b0-bccea0a9cedf
+ceTaskUrl=http://localhost:9000/api/ce/task?id=54c10765-8ba7-4273-87b0-bccea0a9cedf
