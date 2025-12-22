@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth_provider.dart';
+import '../../../utils/api_config.dart';
 
 class FatigueResultPage extends StatefulWidget {
   final double score;
@@ -121,7 +122,7 @@ class _FatigueResultPageState extends State<FatigueResultPage> {
       });
 
       // ✅ endpoint Spring séparé (table différente) — NE PAS TOUCHER
-      const String springApiUrl = "http://10.0.2.2:8080/api/fatigue-results";
+      final String springApiUrl = "${getSpringApiBaseUrl()}/api/fatigue-results";
 
       final recommendationText = _recs
           .map((r) => (r["title"] != null) ? "- ${r["title"]}" : "")

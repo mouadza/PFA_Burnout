@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/api_client.dart';
+import '../../utils/api_config.dart';
 
 class AdminUserDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> user;
@@ -11,7 +12,7 @@ class AdminUserDetailsScreen extends StatefulWidget {
 }
 
 class _AdminUserDetailsScreenState extends State<AdminUserDetailsScreen> {
-  final apiClient = ApiClient(baseUrl: 'http://10.0.2.2:8080'); // ⚠️ Vérifiez votre IP
+  final apiClient = ApiClient(baseUrl: getSpringApiBaseUrl()); // ✅ URL adaptée automatiquement selon la plateforme
   late bool isApproved;
   bool isLoading = false;
 

@@ -9,6 +9,7 @@
   import 'package:path/path.dart' as p;
 
   import 'fatigue_result_page.dart';
+  import '../../../utils/api_config.dart';
 
   class FatigueCameraScreen extends StatefulWidget {
     const FatigueCameraScreen({super.key});
@@ -25,7 +26,7 @@
     String? _error;
 
     // ✅ Endpoint fatigue (score par tranches + recos détaillées)
-    final String apiUrl = "http://10.0.2.2:8000/fatigue/predict_personalized";
+    late final String apiUrl = "${getFastApiBaseUrl()}/fatigue/predict_personalized";
 
     bool _previewPaused = false;
 

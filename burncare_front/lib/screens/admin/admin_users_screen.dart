@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/api_client.dart';
+import '../../utils/api_config.dart';
 import 'admin_user_details_screen.dart';
 
 class AdminUsersScreen extends StatefulWidget {
@@ -10,8 +11,8 @@ class AdminUsersScreen extends StatefulWidget {
 }
 
 class _AdminUsersScreenState extends State<AdminUsersScreen> {
-  // ⚠️ Assurez-vous que l'URL correspond à votre configuration (10.0.2.2 pour émulateur)
-  final apiClient = ApiClient(baseUrl: 'http://10.0.2.2:8080');
+  // ✅ URL adaptée automatiquement selon la plateforme
+  final apiClient = ApiClient(baseUrl: getSpringApiBaseUrl());
 
   List<dynamic> users = [];
   bool isLoading = true;
