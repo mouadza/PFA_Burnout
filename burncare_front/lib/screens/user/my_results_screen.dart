@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth_provider.dart';
+import '../../../utils/api_config.dart';
 
 class MyResultsScreen extends StatefulWidget {
   const MyResultsScreen({super.key});
@@ -86,7 +87,7 @@ class _MyResultsScreenState extends State<MyResultsScreen>
         return;
       }
 
-      const url = "http://10.0.2.2:8080/api/burnout-results/me";
+      final url = "${getSpringApiBaseUrl()}/api/burnout-results/me";
       final response = await http.get(
         Uri.parse(url),
         headers: {"Authorization": "Bearer $token"},
@@ -132,7 +133,7 @@ class _MyResultsScreenState extends State<MyResultsScreen>
         return;
       }
 
-      const url = "http://10.0.2.2:8080/api/fatigue-results/me";
+      final url = "${getSpringApiBaseUrl()}/api/fatigue-results/me";
       final response = await http.get(
         Uri.parse(url),
         headers: {"Authorization": "Bearer $token"},

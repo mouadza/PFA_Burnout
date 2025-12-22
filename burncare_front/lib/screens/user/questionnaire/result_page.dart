@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../user_home_screen.dart';
 
 import '../../../providers/auth_provider.dart';
+import '../../../utils/api_config.dart';
 
 class ResultPage extends StatefulWidget {
   final double score;            // 0–100
@@ -91,7 +92,7 @@ class _ResultPageState extends State<ResultPage> {
         _saveError = null;
       });
 
-      const String springApiUrl = "http://10.0.2.2:8080/api/burnout-results";
+      final String springApiUrl = "${getSpringApiBaseUrl()}/api/burnout-results";
 
       // ✅ Option: on stocke tout (reco détaillées) au lieu d’un string
       final response = await http.post(

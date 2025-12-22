@@ -5,10 +5,11 @@ import 'services/api_client.dart';
 import 'services/auth_service.dart';
 import 'providers/auth_provider.dart';
 import 'burncare_app.dart';
+import 'utils/api_config.dart';
 
 void main() {
-
-  final apiClient = ApiClient(baseUrl: 'http://10.0.2.2:8080');
+  // Utilise une URL différente selon la plateforme (web / Android / desktop)
+  final apiClient = ApiClient(baseUrl: getSpringApiBaseUrl());
   final authService = AuthService(apiClient);
 
   runApp(

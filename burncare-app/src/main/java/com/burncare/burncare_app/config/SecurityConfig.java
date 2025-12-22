@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,11 +30,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationConverter jwtAuthConverter) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity http,
+            JwtAuthenticationConverter jwtAuthConverter,
+            CorsConfigurationSource corsConfigurationSource
+    ) throws Exception {
 
         // SÉCURITÉ : On désactive CSRF car nous sommes en mode "Stateless" (API REST avec Token).
         // Ce n'est pas une faille de sécurité ici.
         http.csrf(csrf -> csrf.disable());
+
+        // CORS géré via CorsConfig (pour Flutter Web / frontends)
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource));
 
         http.sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

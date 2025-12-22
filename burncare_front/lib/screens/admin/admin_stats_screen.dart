@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../utils/api_config.dart';
 
 
 class AdminStatsScreen extends StatefulWidget {
@@ -28,7 +29,7 @@ class _AdminStatsScreenState extends State<AdminStatsScreen> {
   Future<void> fetchStats() async {
     final token = context.read<AuthProvider>().token;
     final res = await http.get(
-      Uri.parse("http://10.0.2.2:8080/api/admin/stats"),
+      Uri.parse("${getSpringApiBaseUrl()}/api/admin/stats"),
       headers: {"Authorization": "Bearer $token"},
     );
 
