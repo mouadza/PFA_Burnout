@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'result_page.dart';
+import '../../../utils/api_config.dart';
 
 class QuestionnaireScreen extends StatefulWidget {
   const QuestionnaireScreen({super.key});
@@ -40,7 +41,7 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
   bool isLoading = false;
 
   // ✅ endpoint FastAPI burnout personnalisé (par score)
-  final String apiUrl = "http://10.0.2.2:8000/predict_personalized";
+  late final String apiUrl = "${getFastApiBaseUrl()}/predict_personalized";
 
   @override
   void initState() {
