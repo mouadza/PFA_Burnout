@@ -1,0 +1,124 @@
+<div class="my-results-container">
+  <div class="page-header">
+    <h1>Mes résultats</h1>
+    <button class="refresh-btn" (click)="refresh()" title="Rafraîchir">
+      <i class="fas fa-sync-alt"></i>
+      Rafraîchir
+    </button>
+  </div>
+
+  <main class="results-content">
+    <div class="tabs">
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'burnout'"
+        (click)="setTab('burnout')">
+        <i class="fas fa-clipboard-list"></i>
+        Burnout ({{ burnoutResults.length }})
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'fatigue'"
+        (click)="setTab('fatigue')">
+        <i class="fas fa-camera"></i>
+        Fatigue ({{ fatigueResults.length }})
+      </button>
+    </div>
+
+    <!-- Burnout Tab -->
+    <div *ngIf="activeTab === 'burnout'" class="tab-content">
+      <div *ngIf="loadingBurnout" class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Chargement...
+      </div>
+      
+      <div *ngIf="errorBurnout" class="error">
+        {{ errorBurnout }}
+        <button (click)="fetchBurnoutResults()">Réessayer</button>
+      </div>
+
+      <div *ngIf="!loadingBurnout && !errorBurnout && burnoutResults.length === 0" class="empty">
+        <i class="fas fa-inbox"></i>
+        <p>Aucun résultat burnout enregistré.</p>
+        <button (click)="fetchBurnoutResults()">Rafraîchir</button>
+      </div>
+
+      <div *ngIf="!loadingBurnout && !errorBurnout && burnoutResults.length > 0" class="results-list">
+        <div class="summary-header">
+          <h3>Burnout - Questionnaire</h3>
+          <p>Historique de vos évaluations burnout</p>
+        </div>
+        
+        <div class="result-cards">
+          <div *ngFor="let result of burnoutResults" class="result-card" (click)="openDetails(result, 'burnout')">
+            <div class="score-bubble" [style.background-color]="getColorForRisk(result.riskLabel) + '20'">
+              <span [style.color]="getColorForRisk(result.riskLabel)">{{ result.burnoutScore }}</span>
+            </div>
+            <div class="result-info">
+              <div class="result-header">
+                <span class="risk-title" [style.color]="getColorForRisk(result.riskLabel)">{{ result.riskTitle }}</span>
+                <span class="risk-badge" [style.background-color]="getColorForRisk(result.riskLabel) + '20'" [style.color]="getColorForRisk(result.riskLabel)">
+                  {{ result.riskLabel }}
+                </span>
+              </div>
+              <div class="result-meta">
+                <i class="fas fa-clipboard-list"></i>
+                <span>{{ formatDate(result.createdAt) }}</span>
+              </div>
+              <p *ngIf="result.message" class="result-message">{{ result.message }}</p>
+              <button class="view-details-btn">Voir détails</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fatigue Tab -->
+    <div *ngIf="activeTab === 'fatigue'" class="tab-content">
+      <div *ngIf="loadingFatigue" class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Chargement...
+      </div>
+      
+      <div *ngIf="errorFatigue" class="error">
+        {{ errorFatigue }}
+        <button (click)="fetchFatigueResults()">Réessayer</button>
+      </div>
+
+      <div *ngIf="!loadingFatigue && !errorFatigue && fatigueResults.length === 0" class="empty">
+        <i class="fas fa-inbox"></i>
+        <p>Aucun résultat fatigue enregistré.</p>
+        <button (click)="fetchFatigueResults()">Rafraîchir</button>
+      </div>
+
+      <div *ngIf="!loadingFatigue && !errorFatigue && fatigueResults.length > 0" class="results-list">
+        <div class="summary-header">
+          <h3>Fatigue - Caméra</h3>
+          <p>Historique des analyses fatigue par image</p>
+        </div>
+        
+        <div class="result-cards">
+          <div *ngFor="let result of fatigueResults" class="result-card" (click)="openDetails(result, 'fatigue')">
+            <div class="score-bubble" [style.background-color]="getColorForRisk(result.riskLabel) + '20'">
+              <span [style.color]="getColorForRisk(result.riskLabel)">{{ result.fatigueScore }}</span>
+            </div>
+            <div class="result-info">
+              <div class="result-header">
+                <span class="risk-title" [style.color]="getColorForRisk(result.riskLabel)">{{ result.riskTitle }}</span>
+                <span class="risk-badge" [style.background-color]="getColorForRisk(result.riskLabel) + '20'" [style.color]="getColorForRisk(result.riskLabel)">
+                  {{ result.riskLabel }}
+                </span>
+              </div>
+              <div class="result-meta">
+                <i class="fas fa-camera"></i>
+                <span>{{ formatDate(result.createdAt) }}</span>
+                <span *ngIf="result.confidence" class="confidence">• {{ (result.confidence * 100).toFixed(0) }}%</span>
+              </div>
+              <p *ngIf="result.message" class="result-message">{{ result.message }}</p>
+              <button class="view-details-btn">Voir détails</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+

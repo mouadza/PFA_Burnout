@@ -1,0 +1,78 @@
+<div class="settings-container">
+  <div class="page-header">
+    <h1>Paramètres</h1>
+    <button *ngIf="!isEditing" class="edit-btn" (click)="isEditing = true">
+      <i class="fas fa-edit"></i>
+      Modifier
+    </button>
+  </div>
+
+  <main class="content">
+    <section class="profile-section">
+      <h2>Informations Personnelles</h2>
+      <div class="profile-card">
+        <form (ngSubmit)="saveProfile()">
+          <div class="form-group">
+            <label>Prénom</label>
+            <input type="text" [(ngModel)]="profile.firstName" name="firstName" [disabled]="!isEditing">
+          </div>
+          <div class="form-group">
+            <label>Nom</label>
+            <input type="text" [(ngModel)]="profile.lastName" name="lastName" [disabled]="!isEditing">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="profile.email" name="email" disabled>
+          </div>
+          <div class="form-group">
+            <label>Profession</label>
+            <input type="text" [(ngModel)]="profile.profession" name="profession" disabled>
+          </div>
+
+          <div *ngIf="isEditing" class="form-actions">
+            <button type="submit" class="save-btn" [disabled]="isLoading">
+              {{ isLoading ? 'Enregistrement...' : 'Enregistrer les modifications' }}
+            </button>
+            <button type="button" class="cancel-btn" (click)="isEditing = false">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="security-section">
+      <h2>Sécurité</h2>
+      <div class="security-card" (click)="showPasswordDialog = true">
+        <i class="fas fa-lock"></i>
+        <div>
+          <h3>Changer le mot de passe</h3>
+          <p>Mettre à jour votre code d'accès</p>
+        </div>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </section>
+  </main>
+
+  <!-- Password Dialog -->
+  <div *ngIf="showPasswordDialog" class="dialog-overlay" (click)="showPasswordDialog = false">
+    <div class="dialog" (click)="$event.stopPropagation()">
+      <h2>Changer le mot de passe</h2>
+      <form (ngSubmit)="changePassword()">
+        <div class="form-group">
+          <label>Nouveau mot de passe</label>
+          <input type="password" [(ngModel)]="passwordData.newPassword" name="newPassword" required>
+        </div>
+        <div class="form-group">
+          <label>Confirmer</label>
+          <input type="password" [(ngModel)]="passwordData.confirmPassword" name="confirmPassword" required>
+        </div>
+        <div class="dialog-actions">
+          <button type="button" (click)="showPasswordDialog = false">Annuler</button>
+          <button type="submit" [disabled]="isLoading">
+            {{ isLoading ? 'Modification...' : 'Valider' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

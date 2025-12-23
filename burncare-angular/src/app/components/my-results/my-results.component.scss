@@ -1,0 +1,272 @@
+.my-results-container {
+  width: 100%;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 24px;
+    font-weight: bold;
+  }
+}
+
+.refresh-btn {
+  background: white;
+  border: 2px solid #3498db;
+  color: #3498db;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    background: #3498db;
+    color: white;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  color: #7f8c8d;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  i {
+    font-size: 18px;
+  }
+
+  &.active {
+    color: #3498db;
+    border-bottom-color: #3498db;
+  }
+
+  &:hover:not(.active) {
+    color: #34495e;
+  }
+}
+
+.tab-content {
+  min-height: 400px;
+}
+
+.loading, .error, .empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #7f8c8d;
+
+  i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  button {
+    margin-top: 16px;
+    padding: 10px 20px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+      background: #2980b9;
+    }
+  }
+}
+
+.error {
+  color: #e74c3c;
+}
+
+.summary-header {
+  background: white;
+  padding: 16px;
+  border-radius: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+  h3 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+
+  p {
+    margin: 0;
+    color: #7f8c8d;
+    font-size: 14px;
+  }
+}
+
+.results-list {
+  .result-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.result-card {
+  background: white;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+}
+
+.score-bubble {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  span {
+    font-size: 18px;
+    font-weight: bold;
+  }
+}
+
+.result-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  .risk-title {
+    flex: 1;
+    font-size: 18px;
+    font-weight: bold;
+    min-width: 200px;
+  }
+
+  .risk-badge {
+    padding: 6px 12px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+}
+
+.result-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #7f8c8d;
+  font-size: 14px;
+
+  i {
+    font-size: 16px;
+  }
+
+  .confidence {
+    color: #7f8c8d;
+  }
+}
+
+.result-message {
+  color: #34495e;
+  font-size: 14px;
+  margin: 8px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.view-details-btn {
+  align-self: flex-end;
+  padding: 8px 16px;
+  background: transparent;
+  color: #3498db;
+  border: 1px solid #3498db;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+
+  &:hover {
+    background: #e3f2fd;
+  }
+}
+
+@media (max-width: 768px) {
+  .my-results-container {
+    padding: 15px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .tabs {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .tab-btn {
+    border-bottom: 1px solid #e0e0e0;
+    border-left: 3px solid transparent;
+
+    &.active {
+      border-left-color: #3498db;
+      border-bottom-color: #e0e0e0;
+    }
+  }
+
+  .result-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .result-header {
+    flex-direction: column;
+    align-items: center;
+  }
+}

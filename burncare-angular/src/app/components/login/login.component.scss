@@ -1,0 +1,242 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.login-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 20px;
+
+  i {
+    font-size: 48px;
+    color: #e74c3c;
+  }
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+p {
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 16px;
+  margin: 0 0 30px 0;
+}
+
+.tab-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  color: #7f8c8d;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+
+  &.active {
+    color: #3498db;
+    border-bottom-color: #3498db;
+  }
+
+  &:hover:not(.active) {
+    color: #34495e;
+  }
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-control {
+  padding: 14px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+
+  &:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+
+  &::placeholder {
+    color: #bdc3c7;
+  }
+
+  &.error {
+    border-color: #e74c3c;
+    
+    &:focus {
+      border-color: #e74c3c;
+      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+  }
+}
+
+.validation-message {
+  margin-top: 6px;
+  padding: 8px 12px;
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 6px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 3px solid #e74c3c;
+  animation: slideDown 0.3s ease-out;
+  visibility: visible;
+  opacity: 1;
+  
+  i {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  
+  span, .validation-text {
+    flex: 1;
+    display: inline-block;
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.btn-login {
+  padding: 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.connection-status {
+  margin-top: 16px;
+  padding: 12px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &.error {
+    background: #fff3e0;
+    color: #e65100;
+  }
+
+  .retry-btn {
+    margin-left: 12px;
+    padding: 4px 12px;
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    color: inherit;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s;
+
+    &:hover:not(:disabled) {
+      background: currentColor;
+      color: white;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.error-message {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: 1px solid #ef5350;
+  visibility: visible !important;
+  opacity: 1 !important;
+  animation: slideDown 0.3s ease-out;
+  
+  i {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  
+  span, .error-text {
+    flex: 1;
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #c62828 !important;
+  }
+}

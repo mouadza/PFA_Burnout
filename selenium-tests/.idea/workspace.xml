@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73ddf83a-d790-40be-a496-2cda9ddf048e" name="Changes" comment="">
+<<<<<<< HEAD
       <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
@@ -15,12 +16,31 @@
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/controllers/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/controllers/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/entities/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/entities/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/services/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/services/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare_front/lib/screens/admin/admin_home_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare_front/lib/screens/admin/admin_home_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare_front/lib/screens/auth/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare_front/lib/screens/auth/login_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare_front/lib/screens/user/user_home_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare_front/lib/screens/user/user_home_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../dummy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> 107f1b9 (Les tests automatisé avec Selenium)
       <change beforePath="$PROJECT_DIR$/src/test/java/com/burncare/selenium/LoginTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/burncare/selenium/LoginTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -48,6 +68,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "JUnit.LoginTest.executor": "Run",
+<<<<<<< HEAD
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -55,6 +76,13 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "dev",
     "ignore.virus.scanning.warn.message": "true",
+=======
+    "JUnit.LoginTest1.executor": "Run",
+    "JUnit.QuestionnaireTest.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "dev",
+>>>>>>> 107f1b9 (Les tests automatisé avec Selenium)
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/hp/Desktop/PFA_Burnout/selenium-tests",
     "node.js.detected.package.eslint": "true",
@@ -62,6 +90,12 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+<<<<<<< HEAD
+=======
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+>>>>>>> 107f1b9 (Les tests automatisé avec Selenium)
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -103,9 +137,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1766400290534</updated>
+<<<<<<< HEAD
       <workItem from="1766400292071" duration="1198000" />
       <workItem from="1766405946566" duration="679000" />
       <workItem from="1766431199979" duration="5574000" />
+=======
+      <workItem from="1766400292071" duration="1250000" />
+      <workItem from="1766405540417" duration="8389000" />
+      <workItem from="1766423340360" duration="15925000" />
+      <workItem from="1766484282894" duration="8350000" />
+>>>>>>> 107f1b9 (Les tests automatisé avec Selenium)
     </task>
     <servers />
   </component>

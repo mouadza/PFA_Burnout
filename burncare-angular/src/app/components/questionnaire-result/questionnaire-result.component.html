@@ -1,0 +1,118 @@
+<div class="result-container">
+
+  <main class="result-content">
+    <div *ngIf="saving" class="saving-indicator">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Enregistrement de votre résultat...</span>
+    </div>
+    <div *ngIf="saveError" class="error-message">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ saveError }}
+    </div>
+
+    <div *ngIf="score === 0 && riskTitle === ''" class="loading-message">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Chargement des résultats...</p>
+    </div>
+
+    <div *ngIf="score > 0 || riskTitle !== ''" class="result-card">
+      <h2>Résultats de l'évaluation</h2>
+      <p class="subtitle">Analyse de votre risque de burnout</p>
+
+      <div class="score-circle">
+        <div class="circle-wrapper">
+          <svg class="progress-ring" width="140" height="140">
+            <circle
+              class="progress-ring-circle"
+              [attr.stroke]="getColorForRisk()"
+              [attr.stroke-dasharray]="(score / 100) * 377 + ' 377'"
+              cx="70"
+              cy="70"
+              r="60"
+              fill="transparent"
+              stroke-width="10"
+            />
+          </svg>
+          <div class="score-text">{{ score.toFixed(0) }}</div>
+        </div>
+      </div>
+
+      <p class="confidence">Confiance modèle : {{ (confidence * 100).toFixed(0) }}%</p>
+
+      <div class="risk-section">
+        <div class="risk-title" [style.color]="getColorForRisk()">
+          <i class="fas fa-exclamation-triangle"></i>
+          {{ riskTitle }}
+        </div>
+        <p class="risk-message">{{ message }}</p>
+      </div>
+    </div>
+
+    <div class="recommendations-section">
+      <h3>Recommandations personnalisées</h3>
+      
+      <div *ngIf="recommendations.length === 0" class="no-recommendations">
+        Aucune recommandation disponible.
+      </div>
+
+      <div *ngFor="let rec of recommendations" class="recommendation-card">
+        <div class="rec-header">
+          <i class="fas" [ngClass]="'fa-' + getIconForTag(rec.tag)"></i>
+          <span class="rec-title">{{ rec.title }}</span>
+          <span class="severity-badge">Sév. {{ rec.severity || 1 }}/5</span>
+        </div>
+        
+        <div *ngIf="rec.why" class="rec-why">
+          Pourquoi : {{ rec.why }}
+        </div>
+
+        <div *ngIf="rec.plan" class="rec-plan">
+          <div *ngIf="getListFrom(rec.plan.now).length > 0" class="plan-section">
+            <strong>Maintenant :</strong>
+            <ul>
+              <li *ngFor="let item of getListFrom(rec.plan.now)">{{ item }}</li>
+            </ul>
+          </div>
+          <div *ngIf="getListFrom(rec.plan.next_30_min).length > 0" class="plan-section">
+            <strong>Dans 30 minutes :</strong>
+            <ul>
+              <li *ngFor="let item of getListFrom(rec.plan.next_30_min)">{{ item }}</li>
+            </ul>
+          </div>
+          <div *ngIf="getListFrom(rec.plan.during_shift).length > 0" class="plan-section">
+            <strong>Pendant le service :</strong>
+            <ul>
+              <li *ngFor="let item of getListFrom(rec.plan.during_shift)">{{ item }}</li>
+            </ul>
+          </div>
+          <div *ngIf="getListFrom(rec.plan.after_shift).length > 0" class="plan-section">
+            <strong>Après le service :</strong>
+            <ul>
+              <li *ngFor="let item of getListFrom(rec.plan.after_shift)">{{ item }}</li>
+            </ul>
+          </div>
+          <div *ngIf="getListFrom(rec.plan.avoid).length > 0" class="plan-section">
+            <strong>À éviter :</strong>
+            <ul>
+              <li *ngFor="let item of getListFrom(rec.plan.avoid)">{{ item }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn-outline" (click)="retakeTest()">
+        <i class="fas fa-redo"></i> Refaire le test
+      </button>
+      <button class="btn-primary" (click)="goHome()">
+        <i class="fas fa-home"></i> Retour à l'accueil
+      </button>
+    </div>
+
+    <p class="disclaimer">
+      Ce test est un outil de dépistage et ne remplace pas un diagnostic médical professionnel.
+    </p>
+  </main>
+</div>
+

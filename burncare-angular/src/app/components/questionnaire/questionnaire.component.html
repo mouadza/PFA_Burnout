@@ -1,0 +1,40 @@
+<div class="questionnaire-container">
+  <main class="questionnaire-content">
+    <div class="progress-bar">
+      <div class="progress" [style.width.%]="getProgressPercentage()"></div>
+      <span class="progress-text">{{ currentQuestionIndex + 1 }} / {{ questions.length }}</span>
+    </div>
+
+    <div class="question-card" *ngIf="currentQuestion">
+      <div class="question-badge">Stress</div>
+      <h2>{{ currentQuestion }}</h2>
+
+      <div class="options">
+        <button
+          class="option-btn"
+          *ngFor="let option of likertLabels"
+          (click)="selectOption(option)"
+          [class.selected]="selectedOption?.value === option.value">
+          {{ option.text }}
+        </button>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <button
+        class="nav-btn prev"
+        (click)="previousQuestion()"
+        [disabled]="currentQuestionIndex === 0">
+        Précédent
+      </button>
+
+      <button
+        class="nav-btn next"
+        (click)="nextQuestion()"
+        [disabled]="isLoading">
+        <span *ngIf="!isLoading">{{ currentQuestionIndex === questions.length - 1 ? 'Envoyer' : 'Suivant' }}</span>
+        <span *ngIf="isLoading">Envoi...</span>
+      </button>
+    </div>
+  </main>
+</div>

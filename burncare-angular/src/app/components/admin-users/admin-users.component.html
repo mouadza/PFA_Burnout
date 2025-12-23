@@ -1,0 +1,72 @@
+<div class="admin-users-container">
+  <div class="page-header">
+    <h1>Gestion Utilisateurs</h1>
+    <button class="add-btn" (click)="showAddDialog = true">
+      <i class="fas fa-plus"></i>
+      Ajouter un utilisateur
+    </button>
+  </div>
+
+  <main class="content">
+    <div *ngIf="isLoading" class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Chargement...
+    </div>
+
+    <div *ngIf="error" class="error">
+      {{ error }}
+      <button (click)="fetchUsers()">Réessayer</button>
+    </div>
+
+    <div *ngIf="!isLoading && !error">
+      <div *ngIf="users.length === 0" class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <p>Aucun utilisateur trouvé.</p>
+      </div>
+      
+      <div *ngIf="users.length > 0" class="users-list">
+        <div *ngFor="let user of users" class="user-card" (click)="viewUserDetails(user)">
+        <div class="user-avatar" [class.disabled]="!user.enabled">
+          <span>{{ (user.firstName?.[0] || '') + (user.lastName?.[0] || '') }}</span>
+          <div class="status-indicator" [class.active]="user.enabled"></div>
+        </div>
+        <div class="user-info">
+          <h3 [class.disabled]="!user.enabled">
+            {{ (user.firstName || '') + ' ' + (user.lastName || '') || 'Utilisateur sans nom' }}
+          </h3>
+          <p [class.disabled]="!user.enabled">{{ user.email }}</p>
+          <span class="role-badge" [class.admin]="user.role === 'ADMIN'" [class.disabled]="!user.enabled">
+            {{ user.role }}
+          </span>
+        </div>
+        <button class="delete-btn" (click)="deleteUser(user.id); $event.stopPropagation()">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add User Dialog -->
+  <div *ngIf="showAddDialog" class="dialog-overlay" (click)="showAddDialog = false">
+    <div class="dialog" (click)="$event.stopPropagation()">
+      <h2>Ajouter un utilisateur</h2>
+      <form (ngSubmit)="addUser()">
+        <input type="text" placeholder="Prénom" [(ngModel)]="newUser.firstName" name="firstName" required>
+        <input type="text" placeholder="Nom" [(ngModel)]="newUser.lastName" name="lastName" required>
+        <input type="email" placeholder="Email" [(ngModel)]="newUser.email" name="email" required>
+        <input type="password" placeholder="Mot de passe" [(ngModel)]="newUser.password" name="password" required>
+        <select [(ngModel)]="newUser.role" name="role">
+          <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+        </select>
+        <select [(ngModel)]="newUser.profession" name="profession">
+          <option *ngFor="let prof of professions" [value]="prof">{{ prof }}</option>
+        </select>
+        <div class="dialog-actions">
+          <button type="button" (click)="showAddDialog = false">Annuler</button>
+          <button type="submit">Ajouter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

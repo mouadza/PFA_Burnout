@@ -1,24 +1,25 @@
 package com.burncare.selenium;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.junit.jupiter.api.*;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+<<<<<<< HEAD
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+=======
+import org.openqa.selenium.support.ui.*;
+>>>>>>> 107f1b9 (Les tests automatisé avec Selenium)
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
+<<<<<<< HEAD
 /**
  * Tests Selenium pour l'application Flutter Web BurnCare
  * 
@@ -26,18 +27,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * 1. Démarrer l'app Flutter web : flutter run -d chrome --web-port=5000
  * 2. Exécuter : mvn test -Dapp.url=http://localhost:5000
  */
+=======
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+>>>>>>> 107f1b9 (Les tests automatisé avec Selenium)
 public class LoginTest {
 
     private static String appUrl;
     private WebDriver driver;
     private WebDriverWait wait;
 
-    @BeforeAll
-    static void setupClass() {
-        WebDriverManager.chromedriver().setup();
-        appUrl = System.getProperty("app.url", "http://localhost:5000");
-    }
+    private static final String USER_EMAIL = "mouad@gmail.com";
+    private static final String USER_PASSWORD = "mouad1234";
+    private static final String ADMIN_EMAIL = "admin@gmail.com";
+    private static final String ADMIN_PASSWORD = "admin1234";
+    private static final String UNAPPROVED_USER_EMAIL = "simo@gmail.com";
+    private static final String UNAPPROVED_USER_PASSWORD = "simo1234";
 
+    // ===================== SETUP / TEARDOWN =====================
+
+    @BeforeAll
+    void setupClass() {
+        WebDriverManager.chromedriver().setup();
+        appUrl = System.getProperty("app.url", "http://localhost:4200");
+
+<<<<<<< HEAD
     @BeforeEach
     void setupTest() {
         System.out.println("\n=== Configuration du test ===");
@@ -60,15 +75,112 @@ public class LoginTest {
 
         // Timeout augmenté pour Flutter web (peut être très lent à charger)
         wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+=======
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--window-size=1400,900");
+
+        driver = new ChromeDriver(options);
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+>>>>>>> 107f1b9 (Les tests automatisé avec Selenium)
     }
 
-    @AfterEach
+    @AfterAll
     void tearDown() {
-        if (driver != null) {
-            driver.quit();
+        if (driver != null) driver.quit();
+    }
+
+    private WebDriverWait wait45() {
+        return new WebDriverWait(driver, Duration.ofSeconds(45));
+    }
+
+    private void sleep(int ms) {
+        try { Thread.sleep(ms); } catch (InterruptedException ignored) {}
+    }
+
+    private void waitDomReady(WebDriverWait wait) {
+        wait.until(d -> "complete".equals(((JavascriptExecutor) d).executeScript("return document.readyState")));
+    }
+
+    // ===================== HELPERS =====================
+
+    private void clearSession() {
+        try {
+            // works even if not on the same domain? must be on app domain first
+            ((JavascriptExecutor) driver).executeScript(
+                    "window.localStorage.clear();" +
+                            "window.sessionStorage.clear();"
+            );
+        } catch (Exception ignored) {}
+        try {
+            driver.manage().deleteAllCookies();
+        } catch (Exception ignored) {}
+    }
+
+    private void openLoginClean(WebDriverWait wait) {
+        driver.get(appUrl + "/login");
+        waitDomReady(wait);
+        sleep(400);
+        clearSession();
+        driver.navigate().refresh();     // ensure page reflects cleared storage/cookies
+        waitDomReady(wait);
+        sleep(400);
+    }
+
+    private WebElement emailInput(WebDriverWait wait) {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("input[formcontrolname='email'], input[type='email']")
+        ));
+    }
+
+    private WebElement passwordInput(WebDriverWait wait) {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("input[formcontrolname='password'], input[type='password']")
+        ));
+    }
+
+    private void clearAndType(WebElement el, String value) {
+        el.click();
+        el.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        el.sendKeys(Keys.BACK_SPACE);
+        el.sendKeys(value);
+    }
+
+    private void clickLoginButton(WebDriverWait wait) {
+        WebElement btn = wait.until(d -> {
+            for (WebElement b : d.findElements(By.cssSelector("button[type='submit'], button.btn-login"))) {
+                if (b.isDisplayed() && b.isEnabled()) return b;
+            }
+            return null;
+        });
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+        sleep(600);
+    }
+
+    private void doLogin(WebDriverWait wait, String email, String pass) {
+        clearAndType(emailInput(wait), email);
+        clearAndType(passwordInput(wait), pass);
+        clickLoginButton(wait);
+    }
+
+    private String getErrorMessage(WebDriverWait wait) {
+        try {
+            WebElement err = wait.until(d -> {
+                try {
+                    WebElement e = d.findElement(By.cssSelector(".error-message"));
+                    return (e.isDisplayed() && !e.getText().trim().isEmpty()) ? e : null;
+                } catch (Exception ex) {
+                    return null;
+                }
+            });
+            return err.getText().trim();
+        } catch (Exception e) {
+            return null;
         }
     }
 
+<<<<<<< HEAD
     /**
      * Attend que l'application Flutter soit complètement chargée
      */
@@ -471,9 +583,27 @@ public class LoginTest {
         return wait.until(ExpectedConditions.elementToBeClickable(
             By.xpath("//button[contains(., 'Se connecter') or contains(., 'Connexion') or contains(., 'Sign In')]")
         ));
+=======
+    private String getPasswordValidationMessage(WebDriverWait wait) {
+        try {
+            WebElement pass = passwordInput(wait);
+            WebElement formGroup = pass.findElement(By.xpath("./ancestor::div[contains(@class,'form-group')]"));
+            WebElement msg = formGroup.findElement(By.cssSelector(".validation-message"));
+            if (msg.isDisplayed()) {
+                String t = msg.getText().trim();
+                return t.isEmpty() ? null : t;
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
+>>>>>>> 107f1b9 (Les tests automatisé avec Selenium)
     }
 
+    // ===================== ORDERED SCENARIOS =====================
+
     @Test
+<<<<<<< HEAD
     @DisplayName("Login succès avec identifiants valides - Flutter Web")
     void loginSuccess() {
         driver.get(appUrl);
@@ -542,10 +672,31 @@ public class LoginTest {
         // Saisir des identifiants incorrects
         emailInput.clear();
         emailInput.sendKeys("mouad@gmail.com");
+=======
+    @DisplayName("SL-LOGIN — Ordered scenarios (Single Window, no double user login)")
+    void SL_Login_OrderedFlow() {
 
-        passwordInput.clear();
-        passwordInput.sendKeys("mauvais_mdp");
+        WebDriverWait wait = wait45();
+        List<String> failures = new ArrayList<>();
 
+        record Scenario(String code, Runnable steps, Runnable checks) {}
+
+        // ✅ Login as user ONLY once at the start (for demo)
+        System.out.println("▶ Initial step: Login as USER (once)");
+        try {
+            openLoginClean(wait);
+            doLogin(wait, USER_EMAIL, USER_PASSWORD);
+            wait.until(d -> d.getCurrentUrl().contains("/user-home"));
+            System.out.println("✅ PASS: Initial USER login");
+        } catch (Exception ex) {
+            fail("Initial USER login failed: " + ex.getMessage());
+        }
+>>>>>>> 107f1b9 (Les tests automatisé avec Selenium)
+
+        // Then run your ordered scenarios (each starts from clean login state)
+        List<Scenario> scenarios = List.of(
+
+<<<<<<< HEAD
         // Cliquer sur le bouton de connexion
         WebElement loginButton = findLoginButton();
         loginButton.click();
@@ -625,3 +776,94 @@ public class LoginTest {
         }
     }
 }
+=======
+                new Scenario("SL-VALIDATION Password Required",
+                        () -> {
+                            openLoginClean(wait);
+                            clearAndType(emailInput(wait), "test@test.com");
+                            WebElement p = passwordInput(wait);
+                            p.click();
+                            p.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+                            p.sendKeys(Keys.BACK_SPACE);
+                            p.sendKeys(Keys.TAB); // trigger blur
+                            sleep(600);
+                        },
+                        () -> {
+                            String msg = getPasswordValidationMessage(wait);
+                            assertNotNull(msg, "No password required message");
+                            String lower = msg.toLowerCase();
+                            assertTrue((lower.contains("requis") || lower.contains("required")),
+                                    "Unexpected validation: " + msg);
+                        }
+                ),
+
+                new Scenario("SL-03 Invalid Credentials",
+                        () -> {
+                            openLoginClean(wait);
+                            doLogin(wait, USER_EMAIL, "bad_password");
+                        },
+                        () -> {
+                            String err = getErrorMessage(wait);
+                            assertNotNull(err, "No error message displayed");
+                            String lower = err.toLowerCase();
+                            assertTrue(
+                                    lower.contains("incorrect")
+                                            || lower.contains("identifiant")
+                                            || lower.contains("invalide")
+                                            || lower.contains("invalid"),
+                                    "Unexpected error: " + err
+                            );
+                        }
+                ),
+
+                new Scenario("SL-05 User Not Approved",
+                        () -> {
+                            openLoginClean(wait);
+                            doLogin(wait, UNAPPROVED_USER_EMAIL, UNAPPROVED_USER_PASSWORD);
+                        },
+                        () -> {
+                            String err = getErrorMessage(wait);
+                            assertNotNull(err, "No error message for not approved");
+                            String lower = err.toLowerCase();
+                            assertTrue(
+                                    lower.contains("approuv")
+                                            || lower.contains("activ")
+                                            || lower.contains("en attente")
+                                            || lower.contains("pending")
+                                            || lower.contains("administrateur"),
+                                    "Unexpected not-approved msg: " + err
+                            );
+                        }
+                ),
+
+                new Scenario("SL-02 Admin Login Success",
+                        () -> {
+                            openLoginClean(wait);
+                            doLogin(wait, ADMIN_EMAIL, ADMIN_PASSWORD);
+                            wait.until(d -> d.getCurrentUrl().contains("/admin-home"));
+                        },
+                        () -> assertTrue(driver.getCurrentUrl().contains("/admin-home"),
+                                "Expected /admin-home, got: " + driver.getCurrentUrl())
+                )
+        );
+
+        // Run all scenarios even if one fails
+        for (Scenario s : scenarios) {
+            System.out.println("▶ Running: " + s.code);
+            try {
+                s.steps.run();
+                s.checks.run();
+                System.out.println("✅ PASS: " + s.code);
+            } catch (AssertionError | RuntimeException ex) {
+                System.out.println("❌ FAIL: " + s.code + " -> " + ex.getMessage());
+                failures.add(s.code + " -> " + ex.getMessage());
+            }
+        }
+
+        // Final result
+        if (!failures.isEmpty()) {
+            fail("Some scenarios failed:\n- " + String.join("\n- ", failures));
+        }
+    }
+}
+>>>>>>> 107f1b9 (Les tests automatisé avec Selenium)
