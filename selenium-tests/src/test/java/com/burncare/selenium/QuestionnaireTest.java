@@ -74,8 +74,8 @@ public class QuestionnaireTest {
         wait.until(d -> "complete".equals(((JavascriptExecutor) d).executeScript("return document.readyState")));
         // Attendre que Angular soit prêt
         wait.until(d -> ((JavascriptExecutor) d).executeScript(
-            "return typeof window.getAllAngularTestabilities === 'function' ? " +
-            "window.getAllAngularTestabilities().length === 0 : true"));
+                "return typeof window.getAllAngularTestabilities === 'function' ? " +
+                        "window.getAllAngularTestabilities().length === 0 : true"));
     }
 
     private void waitForAngular() {
@@ -84,8 +84,8 @@ public class QuestionnaireTest {
             // Attendre que Angular soit stable
             wait.until(d -> {
                 Object result = ((JavascriptExecutor) d).executeScript(
-                    "return typeof window.getAllAngularTestabilities === 'function' ? " +
-                    "window.getAllAngularTestabilities().every(t => t.isStable()) : true");
+                        "return typeof window.getAllAngularTestabilities === 'function' ? " +
+                                "window.getAllAngularTestabilities().every(t => t.isStable()) : true");
                 return result != null && (Boolean) result;
             });
         } catch (TimeoutException ignored) {
@@ -104,8 +104,8 @@ public class QuestionnaireTest {
         // Trouver les champs email et password (essayer plusieurs sélecteurs)
         WebElement emailInput = wait.until(d -> {
             List<WebElement> inputs = d.findElements(By.cssSelector(
-                "input[type='email'], input[name='email'], input[formcontrolname='email'], " +
-                "input[placeholder*='email' i], input[placeholder*='Email']"));
+                    "input[type='email'], input[name='email'], input[formcontrolname='email'], " +
+                            "input[placeholder*='email' i], input[placeholder*='Email']"));
             for (WebElement input : inputs) {
                 if (input.isDisplayed() && input.isEnabled()) {
                     return input;
@@ -116,7 +116,7 @@ public class QuestionnaireTest {
 
         WebElement passwordInput = wait.until(d -> {
             List<WebElement> inputs = d.findElements(By.cssSelector(
-                "input[type='password'], input[name='password'], input[formcontrolname='password']"));
+                    "input[type='password'], input[name='password'], input[formcontrolname='password']"));
             for (WebElement input : inputs) {
                 if (input.isDisplayed() && input.isEnabled()) {
                     return input;
@@ -138,8 +138,8 @@ public class QuestionnaireTest {
                 if (!btn.isDisplayed() || !btn.isEnabled()) continue;
                 String text = btn.getText().trim().toLowerCase();
                 String type = btn.getAttribute("type");
-                if (text.contains("se connecter") || text.contains("connexion") || 
-                    text.contains("login") || "submit".equals(type)) {
+                if (text.contains("se connecter") || text.contains("connexion") ||
+                        text.contains("login") || "submit".equals(type)) {
                     return btn;
                 }
             }
@@ -157,9 +157,9 @@ public class QuestionnaireTest {
         // Attendre la redirection vers user-home ou admin-home
         wait.until(d -> {
             String currentUrl = d.getCurrentUrl();
-            boolean redirected = currentUrl.contains("/user-home") || 
-                               currentUrl.contains("/admin-home") || 
-                               (!currentUrl.contains("/login") && !currentUrl.endsWith("/"));
+            boolean redirected = currentUrl.contains("/user-home") ||
+                    currentUrl.contains("/admin-home") ||
+                    (!currentUrl.contains("/login") && !currentUrl.endsWith("/"));
             return redirected;
         });
 
@@ -232,8 +232,8 @@ public class QuestionnaireTest {
             List<WebElement> buttons = d.findElements(By.cssSelector("button"));
             for (WebElement btn : buttons) {
                 String text = btn.getText().trim().toLowerCase();
-                if ((text.contains("suivant") || text.contains("envoyer") || text.contains("submit")) 
-                    && !text.contains("précédent")) {
+                if ((text.contains("suivant") || text.contains("envoyer") || text.contains("submit"))
+                        && !text.contains("précédent")) {
                     // Vérifier que le bouton n'est pas désactivé
                     if (btn.isEnabled()) {
                         return btn;
@@ -318,14 +318,14 @@ public class QuestionnaireTest {
             int answerButtonCount = 0;
             for (WebElement btn : answerButtons) {
                 String text = btn.getText().trim();
-                if (text.equals("Jamais") || text.equals("Rarement") || text.equals("Parfois") 
-                    || text.equals("Souvent") || text.equals("Toujours")) {
+                if (text.equals("Jamais") || text.equals("Rarement") || text.equals("Parfois")
+                        || text.equals("Souvent") || text.equals("Toujours")) {
                     answerButtonCount++;
                 }
             }
 
-            assertTrue(answerButtonCount >= 4, 
-                "Au moins 4 boutons de réponse (Jamais, Rarement, Parfois, Souvent, Toujours) doivent être présents. Trouvé: " + answerButtonCount);
+            assertTrue(answerButtonCount >= 4,
+                    "Au moins 4 boutons de réponse (Jamais, Rarement, Parfois, Souvent, Toujours) doivent être présents. Trouvé: " + answerButtonCount);
 
             // Vérifier la barre de progression
             WebElement progressBar = driver.findElement(By.cssSelector(".progress-bar, .progress"));
@@ -349,7 +349,7 @@ public class QuestionnaireTest {
             // Répondre à quelques questions seulement (pas toutes)
             selectAnswer(wait, "Parfois");
             clickNextOrSubmit(wait);
-            
+
             wait.until(d -> {
                 List<WebElement> questions = d.findElements(By.cssSelector("h2, .question-card h2"));
                 return !questions.isEmpty();
@@ -376,17 +376,17 @@ public class QuestionnaireTest {
             }
 
             assertNotNull(alertText, "Une alert doit apparaître pour indiquer que toutes les questions doivent être complétées");
-            
+
             String alertTextLower = alertText.toLowerCase();
-            assertTrue(alertTextLower.contains("pas répondu") || 
-                      alertTextLower.contains("compléter") ||
-                      alertTextLower.contains("questions manquantes") ||
-                      alertTextLower.contains("répondre"),
-                "Le message d'erreur doit indiquer que toutes les questions doivent être complétées. Texte: " + alertText);
+            assertTrue(alertTextLower.contains("pas répondu") ||
+                            alertTextLower.contains("compléter") ||
+                            alertTextLower.contains("questions manquantes") ||
+                            alertTextLower.contains("répondre"),
+                    "Le message d'erreur doit indiquer que toutes les questions doivent être complétées. Texte: " + alertText);
 
             // Vérifier que nous sommes toujours sur la page questionnaire
-            assertTrue(driver.getCurrentUrl().contains("/questionnaire"), 
-                "L'utilisateur doit rester sur la page questionnaire après une soumission incomplète");
+            assertTrue(driver.getCurrentUrl().contains("/questionnaire"),
+                    "L'utilisateur doit rester sur la page questionnaire après une soumission incomplète");
 
         } catch (Exception e) {
             saveArtifacts("SQ_02_fail");
@@ -415,8 +415,8 @@ public class QuestionnaireTest {
             waitForAngular();
 
             // Vérifier l'affichage du résultat
-            WebElement resultCard = wait.until(d -> 
-                d.findElement(By.cssSelector(".result-card, [class*='result']")));
+            WebElement resultCard = wait.until(d ->
+                    d.findElement(By.cssSelector(".result-card, [class*='result']")));
 
             assertNotNull(resultCard, "La carte de résultat doit être visible");
 
@@ -430,9 +430,9 @@ public class QuestionnaireTest {
 
             // Vérifier la présence d'un titre de résultat
             String pageText = driver.findElement(By.tagName("body")).getText().toLowerCase();
-            assertTrue(pageText.contains("résultat") || pageText.contains("score") || 
-                      pageText.contains("burnout") || pageText.contains("risque"),
-                "La page de résultat doit contenir des informations sur le résultat");
+            assertTrue(pageText.contains("résultat") || pageText.contains("score") ||
+                            pageText.contains("burnout") || pageText.contains("risque"),
+                    "La page de résultat doit contenir des informations sur le résultat");
 
         } catch (Exception e) {
             saveArtifacts("SQ_03_fail");
@@ -487,15 +487,15 @@ public class QuestionnaireTest {
             String numericScore = scoreText.replaceAll("[^0-9]", "").trim();
             if (!numericScore.isEmpty()) {
                 int score = Integer.parseInt(numericScore.substring(0, Math.min(3, numericScore.length())));
-                assertTrue(score >= 0 && score <= 100, 
-                    "Le score doit être entre 0 et 100. Score trouvé: " + score);
+                assertTrue(score >= 0 && score <= 100,
+                        "Le score doit être entre 0 et 100. Score trouvé: " + score);
             }
 
             // Vérifier la présence d'informations complémentaires (titre, message, etc.)
             String pageText = driver.findElement(By.tagName("body")).getText().toLowerCase();
-            assertTrue(pageText.contains("résultat") || pageText.contains("risque") || 
-                      pageText.contains("burnout"),
-                "La page doit contenir des informations supplémentaires sur le résultat");
+            assertTrue(pageText.contains("résultat") || pageText.contains("risque") ||
+                            pageText.contains("burnout"),
+                    "La page doit contenir des informations supplémentaires sur le résultat");
 
         } catch (Exception e) {
             saveArtifacts("SQ_04_fail");
@@ -553,17 +553,17 @@ public class QuestionnaireTest {
             }
 
             assertTrue(isOnResultPage || buttonDisabled,
-                "Le bouton doit être désactivé ou la soumission doit avoir abouti à la page de résultat");
+                    "Le bouton doit être désactivé ou la soumission doit avoir abouti à la page de résultat");
 
             // Si on est sur la page de résultat, vérifier qu'il n'y a qu'un seul résultat
             if (isOnResultPage) {
                 waitDomReady(wait);
                 waitForAngular();
-                
+
                 // Vérifier qu'il n'y a qu'un seul élément de résultat principal
                 List<WebElement> resultCards = driver.findElements(By.cssSelector(".result-card, [class*='result-card']"));
                 assertTrue(resultCards.size() <= 1,
-                    "Il ne doit y avoir qu'un seul résultat affiché, même avec plusieurs clics");
+                        "Il ne doit y avoir qu'un seul résultat affiché, même avec plusieurs clics");
             }
 
         } catch (Exception e) {
