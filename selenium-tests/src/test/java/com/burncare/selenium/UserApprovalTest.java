@@ -36,7 +36,7 @@ public class UserApprovalTest {
         WebDriverManager.chromedriver().setup();
         appUrl = System.getProperty("app.url", "http://localhost:4200");
 
-        // Générer un email unique pour éviter les conflits
+
         Random random = new Random();
         int randomNum = random.nextInt(10000);
         testUserEmail = "testuser" + randomNum + "@gmail.com";
