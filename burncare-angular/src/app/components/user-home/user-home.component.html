@@ -1,0 +1,60 @@
+<div class="user-home-container">
+  <main class="main-content">
+    <div class="welcome-section">
+      <h1>Bonjour, {{ userName }} !</h1>
+      <p>Bienvenue sur votre tableau de bord BurnCare</p>
+    </div>
+
+    <div class="stats-section" *ngIf="!isLoading">
+      <div class="stat-card">
+        <i class="fas fa-chart-line"></i>
+        <h3>Dernier test</h3>
+        <p>{{ lastTestDate || 'Aucun test' }}</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-trophy"></i>
+        <h3>Score moyen</h3>
+        <p>{{ averageScore || 0 }}%</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-calendar-alt"></i>
+        <h3>Tests ce mois</h3>
+        <p>{{ testsThisMonth || 0 }}</p>
+      </div>
+    </div>
+    
+    <div *ngIf="isLoading" class="loading-stats">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Chargement des statistiques...</p>
+    </div>
+
+    <div class="actions-section">
+      <h2>Actions rapides</h2>
+      <div class="action-grid">
+        <button class="action-card" (click)="navigateToFatigueTest()">
+          <i class="fas fa-camera"></i>
+          <h3>Test de fatigue</h3>
+          <p>Détecter la fatigue en temps réel</p>
+        </button>
+
+        <button class="action-card" (click)="navigateToResults()">
+          <i class="fas fa-chart-bar"></i>
+          <h3>Mes résultats</h3>
+          <p>Voir l'historique de vos tests</p>
+        </button>
+
+        <button class="action-card" (click)="navigateToQuestionnaire()">
+          <i class="fas fa-clipboard-list"></i>
+          <h3>Questionnaire</h3>
+          <p>Évaluer votre niveau de burnout</p>
+        </button>
+
+        <button class="action-card" (click)="navigateToSettings()">
+          <i class="fas fa-cog"></i>
+          <h3>Paramètres</h3>
+          <p>Gérer votre compte</p>
+        </button>
+      </div>
+    </div>
+  </main>
+</div>

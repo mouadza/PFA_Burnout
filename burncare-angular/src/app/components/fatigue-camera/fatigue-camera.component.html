@@ -1,0 +1,71 @@
+<div class="fatigue-camera-container">
+
+  <main class="camera-section">
+    <div *ngIf="error" class="error-message">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ error }}
+      <button class="retry-btn" (click)="startCamera()" *ngIf="error">
+        <i class="fas fa-redo"></i> Réessayer
+      </button>
+    </div>
+
+    <div class="camera-container">
+      <video
+        #videoElement
+        autoplay
+        playsinline
+        muted
+        class="camera-video"
+        [class.hidden]="!isCameraActive"
+      ></video>
+
+      <div class="camera-placeholder" *ngIf="isLoading || (!isCameraActive && !error)">
+        <i class="fas fa-camera" [class.fa-spin]="isLoading"></i>
+        <p>{{ isLoading ? 'Chargement de la caméra...' : 'Caméra non disponible' }}</p>
+        <button *ngIf="!isLoading && !isCameraActive && !error" class="activate-btn" (click)="startCamera()">
+          <i class="fas fa-video"></i> Activer la caméra
+        </button>
+      </div>
+    </div>
+
+    <canvas #canvasElement style="display: none;"></canvas>
+
+    <div *ngIf="isAnalyzing" class="analyzing-indicator">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Analyse en cours...</span>
+    </div>
+
+    <div class="controls">
+      <div class="camera-controls">
+        <button
+          class="control-btn start-btn"
+          (click)="startCamera()"
+          [disabled]="isCameraActive || isLoading"
+          *ngIf="!isCameraActive"
+        >
+          <i class="fas fa-video"></i>
+          Démarrer la caméra
+        </button>
+        
+        <button
+          class="control-btn stop-btn"
+          (click)="stopCamera()"
+          [disabled]="!isCameraActive || isAnalyzing"
+          *ngIf="isCameraActive"
+        >
+          <i class="fas fa-stop"></i>
+          Arrêter la caméra
+        </button>
+      </div>
+      
+      <button
+        class="analyze-btn"
+        (click)="captureAndAnalyze()"
+        [disabled]="!isCameraActive || isAnalyzing"
+      >
+        <i class="fas fa-camera"></i>
+        Prendre une photo & analyser
+      </button>
+    </div>
+  </main>
+</div>

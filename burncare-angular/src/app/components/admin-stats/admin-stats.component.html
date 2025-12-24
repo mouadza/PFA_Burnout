@@ -1,0 +1,44 @@
+<div class="admin-stats-container">
+  <div class="page-header">
+    <h1>Statistiques globales</h1>
+  </div>
+
+  <main class="content">
+    <div *ngIf="loading" class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Chargement...
+    </div>
+
+    <div *ngIf="error" class="error">
+      {{ error }}
+      <button (click)="fetchStats()">Réessayer</button>
+    </div>
+
+    <div *ngIf="!loading && !error && stats" class="stats-grid">
+      <div class="stat-card" style="--color: #4a5568;">
+        <h3>Utilisateurs</h3>
+        <p>{{ stats.totalUsers || 0 }}</p>
+      </div>
+      <div class="stat-card" style="--color: #e74c3c;">
+        <h3>Burnout total</h3>
+        <p>{{ stats.burnoutTotal || 0 }}</p>
+      </div>
+      <div class="stat-card" style="--color: #c0392b;">
+        <h3>Burnout élevé</h3>
+        <p>{{ stats.burnoutHigh || 0 }}</p>
+      </div>
+      <div class="stat-card" style="--color: #f39c12;">
+        <h3>Fatigue total</h3>
+        <p>{{ stats.fatigueTotal || 0 }}</p>
+      </div>
+      <div class="stat-card" style="--color: #d35400;">
+        <h3>Fatigue élevée</h3>
+        <p>{{ stats.fatigueTired || 0 }}</p>
+      </div>
+      <div class="stat-card" style="--color: #9b59b6;">
+        <h3>Fatigue moyenne</h3>
+        <p>{{ stats.avgFatigueScore?.toFixed(1) || '0.0' }}</p>
+      </div>
+    </div>
+  </main>
+</div>
+

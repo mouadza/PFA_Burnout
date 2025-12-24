@@ -1,0 +1,85 @@
+<div class="home-container">
+  <header class="header">
+    <div class="logo">
+      <i class="fas fa-heartbeat"></i>
+      BurnCare
+    </div>
+    <nav class="nav">
+      <button class="nav-btn" (click)="navigateToLogin()">Connexion</button>
+      <button class="nav-btn primary" (click)="navigateToRegister()">Inscription</button>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <section class="hero">
+      <h1>Détection précoce du burnout</h1>
+      <p>Utilisez l'intelligence artificielle pour détecter les signes de fatigue et prévenir le burnout avant qu'il ne soit trop tard.</p>
+      <div class="hero-actions">
+        <button class="cta-btn" (click)="navigateToRegister()">Commencer maintenant</button>
+        <button class="secondary-btn" (click)="scrollToFeatures()">En savoir plus</button>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <h2>Fonctionnalités principales</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fas fa-camera"></i>
+          <h3>Analyse faciale</h3>
+          <p>Détection automatique des signes de fatigue via la caméra de votre appareil.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-clipboard-list"></i>
+          <h3>Questionnaire</h3>
+          <p>Évaluation complète de votre état émotionnel et physique.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-chart-line"></i>
+          <h3>Suivi personnalisé</h3>
+          <p>Historique détaillé de vos résultats et évolution dans le temps.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-shield-alt"></i>
+          <h3>Confidentialité</h3>
+          <p>Vos données sont sécurisées et traitées de manière confidentielle.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="how-it-works">
+      <h2>Comment ça marche ?</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Inscrivez-vous</h3>
+          <p>Créez votre compte en quelques secondes.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Répondez au questionnaire</h3>
+          <p>Évaluez votre état actuel avec notre questionnaire guidé.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Analyse faciale</h3>
+          <p>Laissez notre IA analyser vos expressions faciales.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>Obtenez vos résultats</h3>
+          <p>Recevez une évaluation complète et des recommandations personnalisées.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <h2>Prenez soin de votre santé mentale</h2>
+      <p>La prévention du burnout commence par une prise de conscience. Commencez dès aujourd'hui.</p>
+      <button class="cta-btn" (click)="navigateToRegister()">Créer mon compte</button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2024 BurnCare. Tous droits réservés.</p>
+  </footer>
+</div>

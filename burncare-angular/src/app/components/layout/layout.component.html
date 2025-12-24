@@ -1,0 +1,66 @@
+<div class="layout-container">
+  <aside class="sidebar" [class.collapsed]="!sidebarOpen" [class.open]="mobileMenuOpen">
+    <div class="sidebar-header">
+      <div class="logo" *ngIf="sidebarOpen">
+        <i class="fas fa-heartbeat"></i>
+        <span>BurnCare</span>
+      </div>
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        <i class="fas" [ngClass]="sidebarOpen ? 'fa-angle-left' : 'fa-angle-right'"></i>
+      </button>
+    </div>
+
+    <div class="user-info" *ngIf="sidebarOpen && user">
+      <div class="user-avatar">
+        {{ (user.firstName?.[0] || '') + (user.lastName?.[0] || '') }}
+      </div>
+      <div class="user-details">
+        <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+        <div class="user-email">{{ user.email }}</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a
+        *ngFor="let item of menuItems"
+        [routerLink]="item.path"
+        [routerLinkActive]="'active'"
+        [routerLinkActiveOptions]="{exact: item.exact}"
+        class="nav-item">
+        <i class="fas" [ngClass]="'fa-' + item.icon"></i>
+        <span *ngIf="sidebarOpen">{{ item.label }}</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer" *ngIf="sidebarOpen">
+      <button class="logout-btn" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Déconnexion</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-menu-btn" (click)="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="page-title">{{ getPageTitle() }}</h1>
+      </div>
+      <div class="header-right" *ngIf="user">
+        <div class="user-menu">
+          <div class="user-avatar-small">
+            {{ (user.firstName?.[0] || '') + (user.lastName?.[0] || '') }}
+          </div>
+          <span class="user-name-small">{{ user.firstName }} {{ user.lastName }}</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+

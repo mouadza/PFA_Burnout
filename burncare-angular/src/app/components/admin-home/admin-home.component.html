@@ -1,0 +1,71 @@
+<div class="admin-home-container">
+  <main class="main-content">
+    <div class="welcome-section">
+      <h1>Tableau de bord administrateur</h1>
+      <p>Gérez les utilisateurs et les données de l'application</p>
+    </div>
+
+    <div class="stats-section">
+      <div class="stat-card">
+        <i class="fas fa-users"></i>
+        <h3>Utilisateurs totaux</h3>
+        <p>{{ totalUsers }}</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-user-check"></i>
+        <h3>Utilisateurs actifs</h3>
+        <p>{{ activeUsers }}</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-chart-line"></i>
+        <h3>Tests totaux</h3>
+        <p *ngIf="!isLoading">{{ testsToday || 0 }}</p>
+        <p *ngIf="isLoading">...</p>
+      </div>
+    </div>
+
+    <div class="actions-section">
+      <h2>Actions administrateur</h2>
+      <div class="action-grid">
+        <button class="action-card" (click)="navigateToUsers()">
+          <i class="fas fa-users-cog"></i>
+          <h3>Gérer les utilisateurs</h3>
+          <p>Voir et modifier les comptes utilisateur</p>
+        </button>
+
+        <button class="action-card" (click)="navigateToStats()">
+          <i class="fas fa-chart-bar"></i>
+          <h3>Statistiques</h3>
+          <p>Analyser les données d'utilisation</p>
+        </button>
+
+        <button class="action-card" (click)="navigateToSettings()">
+          <i class="fas fa-cog"></i>
+          <h3>Paramètres</h3>
+          <p>Gérer votre compte</p>
+        </button>
+
+        <button class="action-card">
+          <i class="fas fa-file-export"></i>
+          <h3>Exporter les données</h3>
+          <p>Télécharger les rapports</p>
+        </button>
+      </div>
+    </div>
+
+    <div class="recent-users-section">
+      <h2>Utilisateurs récents</h2>
+      <div class="users-list">
+        <div class="user-item" *ngFor="let user of users.slice(0, 5)">
+          <div class="user-info">
+            <h4>{{ user.firstName }} {{ user.lastName }}</h4>
+            <p>{{ user.email }}</p>
+          </div>
+          <button class="view-btn" (click)="viewUserDetails(user)">
+            Voir détails
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

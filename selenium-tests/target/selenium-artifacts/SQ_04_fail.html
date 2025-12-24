@@ -1,0 +1,187 @@
+<html lang="en"><head>
+  <script type="module" src="/@vite/client"></script>
+
+  <meta charset="utf-8">
+  <title>BurncareAngular</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="styles.css"><style ng-style-reused="">
+
+.login-container[_ngcontent-ng-c861243049] {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(
+      135deg,
+      #667eea 0%,
+      #764ba2 100%);
+  padding: 20px;
+}
+.login-card[_ngcontent-ng-c861243049] {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+.logo[_ngcontent-ng-c861243049] {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.logo[_ngcontent-ng-c861243049]   i[_ngcontent-ng-c861243049] {
+  font-size: 48px;
+  color: #e74c3c;
+}
+h1[_ngcontent-ng-c861243049] {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+p[_ngcontent-ng-c861243049] {
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 16px;
+  margin: 0 0 30px 0;
+}
+.tab-container[_ngcontent-ng-c861243049] {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #ecf0f1;
+}
+.tab[_ngcontent-ng-c861243049] {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  color: #7f8c8d;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+}
+.tab.active[_ngcontent-ng-c861243049] {
+  color: #3498db;
+  border-bottom-color: #3498db;
+}
+.tab[_ngcontent-ng-c861243049]:hover:not(.active) {
+  color: #34495e;
+}
+.login-form[_ngcontent-ng-c861243049] {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.form-group[_ngcontent-ng-c861243049] {
+  display: flex;
+  flex-direction: column;
+}
+.form-control[_ngcontent-ng-c861243049] {
+  padding: 14px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+.form-control[_ngcontent-ng-c861243049]:focus {
+  outline: none;
+  border-color: #3498db;
+}
+.form-control[_ngcontent-ng-c861243049]::placeholder {
+  color: #bdc3c7;
+}
+.btn-login[_ngcontent-ng-c861243049] {
+  padding: 14px;
+  background:
+    linear-gradient(
+      135deg,
+      #667eea 0%,
+      #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.btn-login[_ngcontent-ng-c861243049]:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+.btn-login[_ngcontent-ng-c861243049]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.connection-status[_ngcontent-ng-c861243049] {
+  margin-top: 16px;
+  padding: 12px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.connection-status.error[_ngcontent-ng-c861243049] {
+  background: #fff3e0;
+  color: #e65100;
+}
+.connection-status[_ngcontent-ng-c861243049]   .retry-btn[_ngcontent-ng-c861243049] {
+  margin-left: 12px;
+  padding: 4px 12px;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  color: inherit;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s;
+}
+.connection-status[_ngcontent-ng-c861243049]   .retry-btn[_ngcontent-ng-c861243049]:hover:not(:disabled) {
+  background: currentColor;
+  color: white;
+}
+.connection-status[_ngcontent-ng-c861243049]   .retry-btn[_ngcontent-ng-c861243049]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.error-message[_ngcontent-ng-c861243049] {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: 1px solid #ef5350;
+}
+.error-message[_ngcontent-ng-c861243049]   i[_ngcontent-ng-c861243049] {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.error-message[_ngcontent-ng-c861243049]   span[_ngcontent-ng-c861243049] {
+  flex: 1;
+}
+/*# sourceMappingURL=/login.component.css.map */</style></head>
+<body><!--nghm--><script type="text/javascript" id="ng-event-dispatch-contract">(()=>{function p(t,n,r,o,e,i,f,m){return{eventType:t,event:n,targetElement:r,eic:o,timeStamp:e,eia:i,eirp:f,eiack:m}}function u(t){let n=[],r=e=>{n.push(e)};return{c:t,q:n,et:[],etc:[],d:r,h:e=>{r(p(e.type,e,e.target,t,Date.now()))}}}function s(t,n,r){for(let o=0;o<n.length;o++){let e=n[o];(r?t.etc:t.et).push(e),t.c.addEventListener(e,t.h,r)}}function c(t,n,r,o,e=window){let i=u(t);e._ejsas||(e._ejsas={}),e._ejsas[n]=i,s(i,r),s(i,o,!0)}window.__jsaction_bootstrap=c;})();
+</script><script>window.__jsaction_bootstrap(document.body,"ng",["click","submit","input","compositionstart","compositionend"],["blur"]);</script>
+  <app-root ng-version="21.0.6" ng-server-context="ssg"><router-outlet></router-outlet><app-login _nghost-ng-c861243049="" ng-version="21.0.6"><div _ngcontent-ng-c861243049="" class="login-container"><div _ngcontent-ng-c861243049="" class="login-card"><div _ngcontent-ng-c861243049="" class="logo"><i _ngcontent-ng-c861243049="" class="fas fa-heart"></i></div><h1 _ngcontent-ng-c861243049="">BurnCare</h1><p _ngcontent-ng-c861243049="">Prévention du Burnout</p><div _ngcontent-ng-c861243049="" class="tab-container"><button _ngcontent-ng-c861243049="" class="tab active">Connexion</button><button _ngcontent-ng-c861243049="" class="tab">Inscription</button></div><form _ngcontent-ng-c861243049="" novalidate="" class="login-form ng-dirty ng-touched ng-valid"><div _ngcontent-ng-c861243049="" class="form-group"><input _ngcontent-ng-c861243049="" type="email" formcontrolname="email" placeholder="Email" class="form-control ng-dirty ng-valid ng-touched" value=""></div><div _ngcontent-ng-c861243049="" class="form-group"><input _ngcontent-ng-c861243049="" type="password" formcontrolname="password" placeholder="Mot de passe" class="form-control ng-dirty ng-valid ng-touched" value=""></div><button _ngcontent-ng-c861243049="" type="submit" class="btn-login"><!--container--><span _ngcontent-ng-c861243049="">Se connecter</span><!--container--></button></form><!--container--></div></div></app-login><!--container--></app-root>
+<script src="main.js" type="module"></script>
+
+<script id="ng-state" type="application/json">{"__nghData__":[{"t":{"19":"t53","20":"t54","21":"t55"},"c":{"19":[],"20":[{"i":"t54","r":1}],"21":[]}},{"c":{"0":[{"i":"c861243049","r":1}]}}]}</script></body></html>
