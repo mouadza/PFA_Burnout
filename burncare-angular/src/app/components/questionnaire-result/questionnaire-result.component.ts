@@ -62,8 +62,8 @@ export class QuestionnaireResultComponent implements OnInit {
       
       this.cdr.detectChanges();
       
-      // Auto-save result
-      this.saveResult();
+      // Le résultat est déjà sauvegardé dans questionnaire.component.ts avant la navigation
+      // On ne sauvegarde plus ici pour éviter la duplication
     } else {
       console.warn('[QuestionnaireResult] No state data found, redirecting to questionnaire');
       // If no state, redirect back

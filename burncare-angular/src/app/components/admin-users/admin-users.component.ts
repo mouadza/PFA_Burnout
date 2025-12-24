@@ -16,6 +16,9 @@ export class AdminUsersComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
   showAddDialog = false;
+  showDeleteDialog = false;
+  userToDelete: any = null;
+  deleteInProgress = false;
 
   newUser = {
     firstName: '',
@@ -50,7 +53,15 @@ export class AdminUsersComponent implements OnInit {
       console.log('[AdminUsers] Fetching users...');
       const users = await this.adminService.getAllUsers();
       console.log('[AdminUsers] Users received:', users);
-      this.users = Array.isArray(users) ? users : [];
+      
+      // Trier les utilisateurs par ID décroissant (les plus récents en premier)
+      // Comme l'entité User n'a pas de createdAt, on utilise l'ID comme proxy
+      // Les IDs plus grands sont généralement créés plus récemment (auto-increment)
+      this.users = Array.isArray(users) ? users.sort((a, b) => {
+        const idA = a.id || 0;
+        const idB = b.id || 0;
+        return idB - idA; // Décroissant (plus récent en premier)
+      }) : [];
       console.log('[AdminUsers] Users array set, length:', this.users.length);
     } catch (error: any) {
       console.error('[AdminUsers] Error:', error);
@@ -63,16 +74,34 @@ export class AdminUsersComponent implements OnInit {
     }
   }
 
-  async deleteUser(id: number) {
-    if (!confirm('Voulez-vous vraiment supprimer cet utilisateur ?')) {
+  openDeleteDialog(user: any) {
+    this.userToDelete = user;
+    this.showDeleteDialog = true;
+  }
+
+  closeDeleteDialog() {
+    this.showDeleteDialog = false;
+    this.userToDelete = null;
+  }
+
+  async deleteUser() {
+    if (!this.userToDelete) {
       return;
     }
 
+    this.deleteInProgress = true;
+    this.cdr.detectChanges();
+
     try {
-      await this.adminService.deleteUser(id.toString());
+      await this.adminService.deleteUser(this.userToDelete.id.toString());
+      this.closeDeleteDialog();
       this.fetchUsers();
     } catch (error: any) {
-      alert(`Erreur: ${error.message || error}`);
+      console.error('[AdminUsers] Error deleting user:', error);
+      alert(`Erreur lors de la suppression: ${error.message || error}`);
+    } finally {
+      this.deleteInProgress = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -104,4 +133,5 @@ export class AdminUsersComponent implements OnInit {
   }
 
 }
+
 

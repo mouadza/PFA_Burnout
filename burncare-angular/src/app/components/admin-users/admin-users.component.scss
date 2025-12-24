@@ -176,12 +176,30 @@
   border: none;
   color: #e74c3c;
   cursor: pointer;
-  padding: 8px;
+  padding: 8px 12px;
   border-radius: 8px;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+
+  i {
+    font-size: 18px;
+    color: #e74c3c;
+  }
 
   &:hover {
     background: #ffebee;
+    
+    i {
+      color: #c0392b;
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 }
 
@@ -237,13 +255,19 @@
       border-radius: 8px;
       cursor: pointer;
       font-size: 14px;
+      transition: all 0.3s;
 
       &[type="button"] {
         background: #ecf0f1;
         color: #34495e;
 
-        &:hover {
+        &:hover:not(:disabled) {
           background: #bdc3c7;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
         }
       }
 
@@ -251,9 +275,58 @@
         background: #3498db;
         color: white;
 
-        &:hover {
+        &:hover:not(:disabled) {
           background: #2980b9;
         }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+
+.delete-dialog {
+  p {
+    margin: 0 0 12px 0;
+    color: #2c3e50;
+    font-size: 14px;
+    line-height: 1.5;
+
+    strong {
+      color: #34495e;
+    }
+  }
+
+  .warning-text {
+    color: #e74c3c;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  .dialog-actions {
+    .cancel-btn {
+      background: #ecf0f1;
+      color: #34495e;
+
+      &:hover:not(:disabled) {
+        background: #bdc3c7;
+      }
+    }
+
+    .delete-confirm-btn {
+      background: #e74c3c;
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: #c0392b;
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
       }
     }
   }

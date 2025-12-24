@@ -6,6 +6,7 @@
     </div>
 
     <div class="question-card" *ngIf="currentQuestion">
+      <div class="question-number">Question {{ currentQuestionIndex + 1 }}/{{ questions.length }}</div>
       <div class="question-badge">Stress</div>
       <h2>{{ currentQuestion }}</h2>
 
@@ -35,6 +36,12 @@
         <span *ngIf="!isLoading">{{ currentQuestionIndex === questions.length - 1 ? 'Envoyer' : 'Suivant' }}</span>
         <span *ngIf="isLoading">Envoi...</span>
       </button>
+    </div>
+
+    <!-- Toast message temporaire -->
+    <div class="toast-message" *ngIf="toastVisible" [class.show]="toastVisible">
+      <i class="fas fa-info-circle"></i>
+      <span>{{ toastMessage }}</span>
     </div>
   </main>
 </div>

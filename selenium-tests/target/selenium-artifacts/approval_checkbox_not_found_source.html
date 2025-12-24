@@ -1,0 +1,415 @@
+<html lang="en"><head>
+  <script type="module" src="/@vite/client"></script>
+
+  <meta charset="utf-8">
+  <title>BurncareAngular</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="styles.css"><style>
+
+.layout-container[_ngcontent-ng-c2699354326] {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+.sidebar[_ngcontent-ng-c2699354326] {
+  width: 260px;
+  background: #2c3e50;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 1000;
+}
+.sidebar.collapsed[_ngcontent-ng-c2699354326] {
+  width: 70px;
+}
+.sidebar-header[_ngcontent-ng-c2699354326] {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.sidebar-header[_ngcontent-ng-c2699354326]   .logo[_ngcontent-ng-c2699354326] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.sidebar-header[_ngcontent-ng-c2699354326]   .logo[_ngcontent-ng-c2699354326]   i[_ngcontent-ng-c2699354326] {
+  font-size: 24px;
+  color: #e74c3c;
+}
+.sidebar-header[_ngcontent-ng-c2699354326]   .toggle-btn[_ngcontent-ng-c2699354326] {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+.sidebar-header[_ngcontent-ng-c2699354326]   .toggle-btn[_ngcontent-ng-c2699354326]:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.user-info[_ngcontent-ng-c2699354326] {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.user-info[_ngcontent-ng-c2699354326]   .user-avatar[_ngcontent-ng-c2699354326] {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #3498db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.user-info[_ngcontent-ng-c2699354326]   .user-details[_ngcontent-ng-c2699354326] {
+  flex: 1;
+  min-width: 0;
+}
+.user-info[_ngcontent-ng-c2699354326]   .user-details[_ngcontent-ng-c2699354326]   .user-name[_ngcontent-ng-c2699354326] {
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.user-info[_ngcontent-ng-c2699354326]   .user-details[_ngcontent-ng-c2699354326]   .user-email[_ngcontent-ng-c2699354326] {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-nav[_ngcontent-ng-c2699354326] {
+  flex: 1;
+  padding: 16px 0;
+}
+.sidebar-nav[_ngcontent-ng-c2699354326]   .nav-item[_ngcontent-ng-c2699354326] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.sidebar-nav[_ngcontent-ng-c2699354326]   .nav-item[_ngcontent-ng-c2699354326]   i[_ngcontent-ng-c2699354326] {
+  width: 20px;
+  text-align: center;
+  font-size: 18px;
+}
+.sidebar-nav[_ngcontent-ng-c2699354326]   .nav-item[_ngcontent-ng-c2699354326]:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+.sidebar-nav[_ngcontent-ng-c2699354326]   .nav-item.active[_ngcontent-ng-c2699354326] {
+  background: #3498db;
+  color: white;
+  border-left: 4px solid #2980b9;
+}
+.sidebar-footer[_ngcontent-ng-c2699354326] {
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.sidebar-footer[_ngcontent-ng-c2699354326]   .logout-btn[_ngcontent-ng-c2699354326] {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+.sidebar-footer[_ngcontent-ng-c2699354326]   .logout-btn[_ngcontent-ng-c2699354326]:hover {
+  background: rgba(231, 76, 60, 0.3);
+  border-color: rgba(231, 76, 60, 0.5);
+}
+.main-content[_ngcontent-ng-c2699354326] {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+}
+.sidebar.collapsed[_ngcontent-ng-c2699354326]    ~ .main-content[_ngcontent-ng-c2699354326] {
+  margin-left: 70px;
+}
+@media (max-width: 768px) {
+  .sidebar[_ngcontent-ng-c2699354326] {
+    transform: translateX(-100%);
+    width: 260px;
+  }
+  .sidebar.open[_ngcontent-ng-c2699354326] {
+    transform: translateX(0);
+  }
+  .main-content[_ngcontent-ng-c2699354326] {
+    margin-left: 0;
+  }
+  .top-header[_ngcontent-ng-c2699354326]   .header-left[_ngcontent-ng-c2699354326]   .mobile-menu-btn[_ngcontent-ng-c2699354326] {
+    display: block;
+  }
+}
+.top-header[_ngcontent-ng-c2699354326] {
+  background: white;
+  padding: 16px 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.top-header[_ngcontent-ng-c2699354326]   .header-left[_ngcontent-ng-c2699354326] {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.top-header[_ngcontent-ng-c2699354326]   .header-left[_ngcontent-ng-c2699354326]   .mobile-menu-btn[_ngcontent-ng-c2699354326] {
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: #2c3e50;
+  cursor: pointer;
+  padding: 8px;
+}
+.top-header[_ngcontent-ng-c2699354326]   .header-left[_ngcontent-ng-c2699354326]   .page-title[_ngcontent-ng-c2699354326] {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+.top-header[_ngcontent-ng-c2699354326]   .header-right[_ngcontent-ng-c2699354326]   .user-menu[_ngcontent-ng-c2699354326] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.top-header[_ngcontent-ng-c2699354326]   .header-right[_ngcontent-ng-c2699354326]   .user-menu[_ngcontent-ng-c2699354326]   .user-avatar-small[_ngcontent-ng-c2699354326] {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #3498db;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+.top-header[_ngcontent-ng-c2699354326]   .header-right[_ngcontent-ng-c2699354326]   .user-menu[_ngcontent-ng-c2699354326]   .user-name-small[_ngcontent-ng-c2699354326] {
+  font-weight: 500;
+  color: #2c3e50;
+}
+.content-area[_ngcontent-ng-c2699354326] {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc(100vh - 64px);
+}
+@media (max-width: 768px) {
+  .sidebar[_ngcontent-ng-c2699354326] {
+    transform: translateX(-100%);
+    width: 260px;
+  }
+  .sidebar.open[_ngcontent-ng-c2699354326] {
+    transform: translateX(0);
+  }
+  .main-content[_ngcontent-ng-c2699354326] {
+    margin-left: 0;
+  }
+  .top-header[_ngcontent-ng-c2699354326]   .header-left[_ngcontent-ng-c2699354326]   .mobile-menu-btn[_ngcontent-ng-c2699354326] {
+    display: block;
+  }
+}
+/*# sourceMappingURL=/layout.component.css.map */</style><style>
+
+.admin-user-details-container[_ngcontent-ng-c3346227743] {
+  width: 100%;
+}
+.page-header[_ngcontent-ng-c3346227743] {
+  margin-bottom: 24px;
+}
+.page-header[_ngcontent-ng-c3346227743]   h1[_ngcontent-ng-c3346227743] {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 24px;
+  font-weight: bold;
+}
+.loading[_ngcontent-ng-c3346227743], 
+.error[_ngcontent-ng-c3346227743] {
+  text-align: center;
+  padding: 60px 20px;
+  color: #7f8c8d;
+}
+.error[_ngcontent-ng-c3346227743] {
+  color: #e74c3c;
+}
+.user-details[_ngcontent-ng-c3346227743] {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.avatar-section[_ngcontent-ng-c3346227743] {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.avatar-section[_ngcontent-ng-c3346227743]   .avatar[_ngcontent-ng-c3346227743] {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #4a5568;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0 auto 16px;
+}
+.avatar-section[_ngcontent-ng-c3346227743]   h2[_ngcontent-ng-c3346227743] {
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+  font-size: 24px;
+}
+.avatar-section[_ngcontent-ng-c3346227743]   p[_ngcontent-ng-c3346227743] {
+  margin: 0;
+  color: #7f8c8d;
+  font-size: 16px;
+}
+.approval-section[_ngcontent-ng-c3346227743] {
+  margin-bottom: 24px;
+}
+.approval-card[_ngcontent-ng-c3346227743] {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.approval-card[_ngcontent-ng-c3346227743]   .approval-header[_ngcontent-ng-c3346227743] {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.approval-card[_ngcontent-ng-c3346227743]   .approval-header[_ngcontent-ng-c3346227743]   i[_ngcontent-ng-c3346227743] {
+  font-size: 30px;
+  color: #27ae60;
+}
+.approval-card[_ngcontent-ng-c3346227743]   .approval-header[_ngcontent-ng-c3346227743]   h3[_ngcontent-ng-c3346227743] {
+  margin: 0 0 4px 0;
+  color: #2c3e50;
+  font-size: 18px;
+}
+.approval-card[_ngcontent-ng-c3346227743]   .approval-header[_ngcontent-ng-c3346227743]   p[_ngcontent-ng-c3346227743] {
+  margin: 0;
+  color: #7f8c8d;
+  font-size: 14px;
+}
+.toggle-switch[_ngcontent-ng-c3346227743] {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+.toggle-switch[_ngcontent-ng-c3346227743]   input[_ngcontent-ng-c3346227743] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle-switch[_ngcontent-ng-c3346227743]   input[_ngcontent-ng-c3346227743]:checked    + .slider[_ngcontent-ng-c3346227743] {
+  background-color: #27ae60;
+}
+.toggle-switch[_ngcontent-ng-c3346227743]   input[_ngcontent-ng-c3346227743]:checked    + .slider[_ngcontent-ng-c3346227743]:before {
+  transform: translateX(26px);
+}
+.toggle-switch[_ngcontent-ng-c3346227743]   input[_ngcontent-ng-c3346227743]:disabled    + .slider[_ngcontent-ng-c3346227743] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.toggle-switch[_ngcontent-ng-c3346227743]   .slider[_ngcontent-ng-c3346227743] {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+.toggle-switch[_ngcontent-ng-c3346227743]   .slider[_ngcontent-ng-c3346227743]:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+.info-section[_ngcontent-ng-c3346227743] {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.info-item[_ngcontent-ng-c3346227743] {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #ecf0f1;
+}
+.info-item[_ngcontent-ng-c3346227743]:last-child {
+  border-bottom: none;
+}
+.info-item[_ngcontent-ng-c3346227743]   i[_ngcontent-ng-c3346227743] {
+  font-size: 20px;
+  color: #4a5568;
+  width: 24px;
+}
+.info-item[_ngcontent-ng-c3346227743]   .label[_ngcontent-ng-c3346227743] {
+  display: block;
+  color: #7f8c8d;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.info-item[_ngcontent-ng-c3346227743]   .value[_ngcontent-ng-c3346227743] {
+  display: block;
+  color: #2c3e50;
+  font-size: 16px;
+  font-weight: 500;
+}
+/*# sourceMappingURL=/admin-user-details.component.css.map */</style></head>
+<body><!--nghm--><script type="text/javascript" id="ng-event-dispatch-contract">(()=>{function p(t,n,r,o,e,i,f,m){return{eventType:t,event:n,targetElement:r,eic:o,timeStamp:e,eia:i,eirp:f,eiack:m}}function u(t){let n=[],r=e=>{n.push(e)};return{c:t,q:n,et:[],etc:[],d:r,h:e=>{r(p(e.type,e,e.target,t,Date.now()))}}}function s(t,n,r){for(let o=0;o<n.length;o++){let e=n[o];(r?t.etc:t.et).push(e),t.c.addEventListener(e,t.h,r)}}function c(t,n,r,o,e=window){let i=u(t);e._ejsas||(e._ejsas={}),e._ejsas[n]=i,s(i,r),s(i,o,!0)}window.__jsaction_bootstrap=c;})();
+</script><script>window.__jsaction_bootstrap(document.body,"ng",["click","submit","input","compositionstart","compositionend"],["blur"]);</script>
+  <app-root ng-version="21.0.6" ng-server-context="ssg"><router-outlet></router-outlet><app-layout _nghost-ng-c2699354326=""><div _ngcontent-ng-c2699354326="" class="layout-container"><aside _ngcontent-ng-c2699354326="" class="sidebar"><div _ngcontent-ng-c2699354326="" class="sidebar-header"><div _ngcontent-ng-c2699354326="" class="logo"><i _ngcontent-ng-c2699354326="" class="fas fa-heartbeat"></i><span _ngcontent-ng-c2699354326="">BurnCare</span></div><!--container--><button _ngcontent-ng-c2699354326="" class="toggle-btn"><i _ngcontent-ng-c2699354326="" class="fas fa-angle-left"></i></button></div><div _ngcontent-ng-c2699354326="" class="user-info"><div _ngcontent-ng-c2699354326="" class="user-avatar"> AS </div><div _ngcontent-ng-c2699354326="" class="user-details"><div _ngcontent-ng-c2699354326="" class="user-name">Admin System</div><div _ngcontent-ng-c2699354326="" class="user-email">admin@gmail.com</div></div></div><!--container--><nav _ngcontent-ng-c2699354326="" class="sidebar-nav"><a _ngcontent-ng-c2699354326="" class="nav-item" href="/admin-home"><i _ngcontent-ng-c2699354326="" class="fas fa-fa-home"></i><span _ngcontent-ng-c2699354326="">Tableau de bord</span><!--container--></a><a _ngcontent-ng-c2699354326="" class="nav-item" href="/admin-users"><i _ngcontent-ng-c2699354326="" class="fas fa-fa-users"></i><span _ngcontent-ng-c2699354326="">Gestion Utilisateurs</span><!--container--></a><a _ngcontent-ng-c2699354326="" class="nav-item" href="/admin-stats"><i _ngcontent-ng-c2699354326="" class="fas fa-fa-chart-bar"></i><span _ngcontent-ng-c2699354326="">Statistiques</span><!--container--></a><a _ngcontent-ng-c2699354326="" class="nav-item" href="/settings"><i _ngcontent-ng-c2699354326="" class="fas fa-fa-cog"></i><span _ngcontent-ng-c2699354326="">Paramètres</span><!--container--></a><!--container--></nav><div _ngcontent-ng-c2699354326="" class="sidebar-footer"><button _ngcontent-ng-c2699354326="" class="logout-btn"><i _ngcontent-ng-c2699354326="" class="fas fa-sign-out-alt"></i><span _ngcontent-ng-c2699354326="">Déconnexion</span></button></div><!--container--></aside><main _ngcontent-ng-c2699354326="" class="main-content"><header _ngcontent-ng-c2699354326="" class="top-header"><div _ngcontent-ng-c2699354326="" class="header-left"><button _ngcontent-ng-c2699354326="" class="mobile-menu-btn"><i _ngcontent-ng-c2699354326="" class="fas fa-bars"></i></button><h1 _ngcontent-ng-c2699354326="" class="page-title">Détails Utilisateur</h1></div><div _ngcontent-ng-c2699354326="" class="header-right"><div _ngcontent-ng-c2699354326="" class="user-menu"><div _ngcontent-ng-c2699354326="" class="user-avatar-small"> AS </div><span _ngcontent-ng-c2699354326="" class="user-name-small">Admin System</span></div></div><!--container--></header><div _ngcontent-ng-c2699354326="" class="content-area"><router-outlet _ngcontent-ng-c2699354326=""></router-outlet><app-admin-user-details _nghost-ng-c3346227743=""><div _ngcontent-ng-c3346227743="" class="admin-user-details-container"><div _ngcontent-ng-c3346227743="" class="page-header"><h1 _ngcontent-ng-c3346227743="">Détails Utilisateur</h1></div><main _ngcontent-ng-c3346227743="" class="content"><!--container--><!--container--><div _ngcontent-ng-c3346227743="" class="user-details"><div _ngcontent-ng-c3346227743="" class="avatar-section"><div _ngcontent-ng-c3346227743="" class="avatar"> TU </div><h2 _ngcontent-ng-c3346227743="">Test User</h2><p _ngcontent-ng-c3346227743="">testuser2518@test.com</p></div><div _ngcontent-ng-c3346227743="" class="approval-section"><div _ngcontent-ng-c3346227743="" class="approval-card"><div _ngcontent-ng-c3346227743="" class="approval-header"><i _ngcontent-ng-c3346227743="" class="fas fa-ban"></i><div _ngcontent-ng-c3346227743=""><h3 _ngcontent-ng-c3346227743="">Approuver ce compte</h3><p _ngcontent-ng-c3346227743="">L'utilisateur est bloqué</p></div></div><label _ngcontent-ng-c3346227743="" class="toggle-switch"><input _ngcontent-ng-c3346227743="" type="checkbox"><span _ngcontent-ng-c3346227743="" class="slider"></span></label></div></div><div _ngcontent-ng-c3346227743="" class="info-section"><div _ngcontent-ng-c3346227743="" class="info-item"><i _ngcontent-ng-c3346227743="" class="fas fa-briefcase"></i><div _ngcontent-ng-c3346227743=""><span _ngcontent-ng-c3346227743="" class="label">Profession</span><span _ngcontent-ng-c3346227743="" class="value">MEDECIN</span></div></div><div _ngcontent-ng-c3346227743="" class="info-item"><i _ngcontent-ng-c3346227743="" class="fas fa-shield-alt"></i><div _ngcontent-ng-c3346227743=""><span _ngcontent-ng-c3346227743="" class="label">Rôle</span><span _ngcontent-ng-c3346227743="" class="value">USER</span></div></div><div _ngcontent-ng-c3346227743="" class="info-item"><i _ngcontent-ng-c3346227743="" class="fas fa-key"></i><div _ngcontent-ng-c3346227743=""><span _ngcontent-ng-c3346227743="" class="label">ID Système</span><span _ngcontent-ng-c3346227743="" class="value">18</span></div></div></div></div><!--container--></main></div></app-admin-user-details><!--container--></div></main></div></app-layout><!--container--></app-root>
+<script src="main.js" type="module"></script>
+
+<script id="ng-state" type="application/json">{"__nghData__":[{"t":{"16":"t0","19":"t1","21":"t2","22":"t3","23":"t4"},"c":{"16":[],"19":[],"21":[],"22":[{"i":"t3","r":1}],"23":[]}},{"c":{"0":[{"i":"c3881773542","r":1}]}}]}</script></body></html>

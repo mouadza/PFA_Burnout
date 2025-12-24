@@ -38,7 +38,7 @@
             {{ user.role }}
           </span>
         </div>
-        <button class="delete-btn" (click)="deleteUser(user.id); $event.stopPropagation()">
+        <button class="delete-btn" (click)="openDeleteDialog(user); $event.stopPropagation()" title="Supprimer">
           <i class="fas fa-trash"></i>
         </button>
       </div>
@@ -66,6 +66,24 @@
           <button type="submit">Ajouter</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Delete User Confirmation Dialog -->
+  <div *ngIf="showDeleteDialog" class="dialog-overlay" (click)="closeDeleteDialog()">
+    <div class="dialog delete-dialog" (click)="$event.stopPropagation()">
+      <h2>Confirmer la suppression</h2>
+      <p>Voulez-vous vraiment supprimer l'utilisateur <strong>{{ userToDelete?.firstName }} {{ userToDelete?.lastName }}</strong> ({{ userToDelete?.email }}) ?</p>
+      <p class="warning-text">Cette action est irréversible.</p>
+      <div class="dialog-actions">
+        <button type="button" class="cancel-btn" (click)="closeDeleteDialog()" [disabled]="deleteInProgress">Annuler</button>
+        <button type="button" class="delete-confirm-btn" (click)="deleteUser()" [disabled]="deleteInProgress">
+          <span *ngIf="!deleteInProgress">Supprimer</span>
+          <span *ngIf="deleteInProgress">
+            <i class="fas fa-spinner fa-spin"></i> Suppression...
+          </span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

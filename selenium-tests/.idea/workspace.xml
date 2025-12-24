@@ -5,28 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73ddf83a-d790-40be-a496-2cda9ddf048e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../burncare-app/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-app/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../burncare_front/lib/screens/user/questionnaire/result_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare_front/lib/screens/user/questionnaire/result_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../dummy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-=======
-      <change beforePath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/controllers/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/controllers/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/entities/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/entities/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/services/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/services/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../burncare_front/lib/screens/admin/admin_home_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare_front/lib/screens/admin/admin_home_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../burncare_front/lib/screens/auth/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare_front/lib/screens/auth/login_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../burncare_front/lib/screens/user/user_home_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare_front/lib/screens/user/user_home_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../dummy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/app/components/admin-home/admin-home.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/app/components/admin-home/admin-home.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/app/components/admin-users/admin-users.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/app/components/admin-users/admin-users.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/app/components/admin-users/admin-users.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/app/components/admin-users/admin-users.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/app/components/admin-users/admin-users.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/app/components/admin-users/admin-users.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/app/components/login/login.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/app/components/login/login.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/app/components/login/login.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/app/components/login/login.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/app/components/questionnaire-result/questionnaire-result.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/app/components/questionnaire-result/questionnaire-result.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/app/components/questionnaire/questionnaire.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/app/components/questionnaire/questionnaire.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/app/components/questionnaire/questionnaire.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/app/components/questionnaire/questionnaire.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/app/components/questionnaire/questionnaire.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/app/components/questionnaire/questionnaire.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/app/components/register/register.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/app/components/register/register.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/app/components/register/register.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/app/components/register/register.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-angular/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-angular/src/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/services/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../burncare-app/src/main/java/com/burncare/burncare_app/services/AdminService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/burncare/selenium/LoginTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/burncare/selenium/LoginTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/burncare/selenium/QuestionnaireTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/selenium-artifacts/SL-VALIDATION_Password_Required_FAIL.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/selenium-artifacts/SL-VALIDATION_Password_Required_FAIL.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/selenium-artifacts/SL-VALIDATION_Password_Required_FAIL.png" beforeDir="false" afterPath="$PROJECT_DIR$/target/selenium-artifacts/SL-VALIDATION_Password_Required_FAIL.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/com/burncare/selenium/LoginTest$1Scenario.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/burncare/selenium/LoginTest$1Scenario.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/com/burncare/selenium/LoginTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/burncare/selenium/LoginTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/com/burncare/selenium/QuestionnaireTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/burncare/selenium/QuestionnaireTest.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +63,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"></component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.LoginTest.executor": "Run",
+    "JUnit.QuestionnaireTest.executor": "Run",
+    "JUnit.UserApprovalTest.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "dev",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/hp/Desktop/PFA_Burnout/selenium-tests",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
   <component name="RunManager">
     <configuration name="LoginTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="burncare-selenium-tests" />
